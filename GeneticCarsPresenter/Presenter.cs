@@ -18,6 +18,8 @@ namespace GeneticCarsPresenter
 
         private const float PixelPerMeter = 7.0f;
 
+        private float simulationSpeed = 1.0f;
+
         public Presenter(IWinFormsView view)
         {
             this.view = view;
@@ -34,6 +36,8 @@ namespace GeneticCarsPresenter
                 new EventHandler<EventArgs>(OnMutationRateChanged);
             view.generationLifeTimeChanged +=
                 new EventHandler<EventArgs>(OnGenerationLifeTimeChanged);
+            view.simulationSpeedChanged += 
+                new EventHandler<EventArgs>(OnSimulationSpeedChanged);
 
             algorithm = new GeneticAlgorithm(4, 96);
         }
@@ -211,7 +215,7 @@ namespace GeneticCarsPresenter
         {
             // Задаем гравитацию и землю.
             physics = new Physics(0, -20.0f);
-            SetRandomGround((float)Math.PI / 8, 20, -50, 20, 1000, 5, 45);
+            SetRandomGround((float)Math.PI / 8, 20, -50, 20, 10000, 5, 45);
             // Переводим гены в машинки.
             ConvertGenesToCars();
         }
@@ -238,20 +242,24 @@ namespace GeneticCarsPresenter
             while(groundPoints[groundPoints.Count - 1][0] < endX)
             {
                 float angle = ((float)rnd.NextDouble() * 2.0f - 1.0f) * maxAngle;
-                float edgeLength = (float)rnd.NextDouble() * 
+                float edgeLength = (float)Math.Max(rnd.NextDouble(), 0.01) * 
                     Math.Max(maxEdgeLength, 0.1f);
                 // Проеверяем, не выходит ли новое ребро за пределы.
                 if(groundPoints[groundPoints.Count - 1][1] +
                     edgeLength * (float)Math.Sin(angle) > upperBound)
                 {
-                    edgeLength *= (upperBound - groundPoints[groundPoints.Count - 1][1]) /
-                        (edgeLength * (float)Math.Sin(angle));
+                    //edgeLength *= 
+                    //(upperBound - groundPoints[groundPoints.Count - 1][1]) /
+                    //    (edgeLength * (float)Math.Sin(angle));
+                    angle *= (-1);
                 }
                 if(groundPoints[groundPoints.Count - 1][1] +
                    edgeLength * (float)Math.Sin(angle) < lowerBound)
                 {
-                    edgeLength *= (groundPoints[groundPoints.Count - 1][1] - lowerBound) /
-                        (edgeLength * (float)Math.Sin(angle));
+                    //edgeLength *=
+                    //    (groundPoints[groundPoints.Count - 1][1] - lowerBound) /
+                    //    (edgeLength * (float)Math.Sin(angle));
+                    angle *= (-1);
                 }
 
                 groundPoints.Add(new float[2]{
@@ -349,12 +357,17 @@ namespace GeneticCarsPresenter
         private void OnStep(object sender, EventArgs e)
         {
             // Прибавляем время, прошедшее с прошлого шага.
-            currentGenerationTime += view.Interval;
+            currentGenerationTime += view.Interval * simulationSpeed;
             Console.WriteLine(currentGenerationTime);
             if(currentGenerationTime < generationLifeTime)
             {
                 // Производим шаг симуляции физики.
-                physics.Step(view.Interval);
+                int iterations = (int)simulationSpeed + 1;
+                float time = view.Interval * simulationSpeed;
+                for(int i = 0; i < iterations; i++)
+                {
+                    physics.Step(time / iterations);
+                }
                 // Двигаем машинки вперед.
                 for(int i = 0; i < physics.CarsCount; i++)
                 {
@@ -410,6 +423,11 @@ namespace GeneticCarsPresenter
         private void OnMutationRateChanged(object sender, EventArgs e)
         {
             algorithm.MutationRate = (double)view.MutationRate / 100;
+        }
+
+        private void OnSimulationSpeedChanged(object sender, EventArgs e)
+        {
+            simulationSpeed = view.SimulationSpeed;
         }
     }
 }

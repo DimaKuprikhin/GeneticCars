@@ -39,5 +39,8 @@ namespace GeneticCarsPresenter
         event EventHandler<EventArgs> generationLifeTimeChanged;
 
         void SetCurrentGenerationTime(double value);
+
+        float SimulationSpeed { get; }
+        event EventHandler<EventArgs> simulationSpeedChanged;
     }
 }

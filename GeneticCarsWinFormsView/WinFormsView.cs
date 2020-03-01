@@ -26,13 +26,13 @@ namespace GeneticCarsWinFormsView
             this.populationSizeUpDown.Location = new Point(920, 60);
             this.populationSizeUpDown.Size = new Size(60, 40);
             this.populationSizeUpDown.Minimum = 2;
-            this.populationSizeUpDown.Maximum = 15;
+            this.populationSizeUpDown.Maximum = 20;
             this.populationSizeUpDown.Value = 4;
 
             this.eliteClonesLabel.Location = new Point(800, 95);
             this.eliteClonesUpDown.Location = new Point(920, 90);
             this.eliteClonesUpDown.Size = new Size(60, 40);
-            this.eliteClonesUpDown.Minimum = 1;
+            this.eliteClonesUpDown.Minimum = 0;
             this.eliteClonesUpDown.Maximum = 10;
 
             this.crossoverTypeLabel.Location = new Point(800, 125);
@@ -61,6 +61,14 @@ namespace GeneticCarsWinFormsView
             this.generationLifeTimeTextBox.Text = "20";
 
             this.currentGenerationTimeLabel.Location = new Point(800, 215);
+
+            this.simulationSpeedLabel.Location = new Point(800, 245);
+            this.simulationSpeedComboBox.Location = new Point(900, 240);
+            for(int i = 0; i < 5; i++)
+            {
+                simulationSpeedComboBox.Items.Add((1.0 + (double)i / 4).ToString());
+            }
+            simulationSpeedComboBox.Items.Add("5");
         }
 
         public int GetWidth { get { return this.pictureBox1.Width; } }
@@ -114,12 +122,15 @@ namespace GeneticCarsWinFormsView
         private void PopulationSizeUpDown_ValueChanged(object sender, EventArgs e)
         {
             populationSizeChanged?.Invoke(this, EventArgs.Empty);
+            eliteClonesUpDown.Value = Math.Min(EliteClones, PopulationSize);
+            EliteClonesUpDown_ValueChanged(this, EventArgs.Empty);
         }
 
         public int EliteClones { get { return (int)eliteClonesUpDown.Value; } }
         public event EventHandler<EventArgs> eliteClonesChanged;
         private void EliteClonesUpDown_ValueChanged(object sender, EventArgs e)
         {
+            eliteClonesUpDown.Value = Math.Min(EliteClones, PopulationSize);
             eliteClonesChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -186,6 +197,17 @@ namespace GeneticCarsWinFormsView
         public void SetCurrentGenerationTime(double value)
         {
             this.currentGenerationTimeLabel.Text = $"Current generation time: {value:F2}";
+        }
+
+        public float SimulationSpeed
+        {
+            get { return float.Parse((string)simulationSpeedComboBox.SelectedItem); }
+        }
+        public event EventHandler<EventArgs> simulationSpeedChanged;
+        private void SimulationSpeedComboBox_SelectedIndexChanged(object sender,
+            EventArgs e)
+        {
+            simulationSpeedChanged(this, EventArgs.Empty);
         }
     }
 }

@@ -90,7 +90,7 @@ namespace GeneticCarsGeneticAlgorithm
         /// <param name="fitnessFunctionResults"> Массив значений. </param>
         public void SetFitnessFunctionResults(double[] fitnessFunctionResults)
         {
-            for(int i = 0; i < fitnessFunctionResults.Length; i++)
+            for(int i = 0; i < fitnessFunctionResults.Length && i < population.Count; i++)
             {
                 population[i].FitnessValue = fitnessFunctionResults[i];
             }

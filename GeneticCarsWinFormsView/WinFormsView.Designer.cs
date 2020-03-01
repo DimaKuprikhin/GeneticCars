@@ -43,6 +43,8 @@
             this.generationLifeTimeTextBox = new System.Windows.Forms.TextBox();
             this.generationLifeTimeLabel = new System.Windows.Forms.Label();
             this.currentGenerationTimeLabel = new System.Windows.Forms.Label();
+            this.simulationSpeedLabel = new System.Windows.Forms.Label();
+            this.simulationSpeedComboBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.populationSizeUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.eliteClonesUpDown)).BeginInit();
@@ -169,11 +171,31 @@
             this.currentGenerationTimeLabel.TabIndex = 15;
             this.currentGenerationTimeLabel.Text = "Current generation time: 0.0";
             // 
+            // simulationSpeedLabel
+            // 
+            this.simulationSpeedLabel.AutoSize = true;
+            this.simulationSpeedLabel.Location = new System.Drawing.Point(807, 244);
+            this.simulationSpeedLabel.Name = "simulationSpeedLabel";
+            this.simulationSpeedLabel.Size = new System.Drawing.Size(116, 17);
+            this.simulationSpeedLabel.TabIndex = 16;
+            this.simulationSpeedLabel.Text = "Simulation speed";
+            // 
+            // simulationSpeedComboBox
+            // 
+            this.simulationSpeedComboBox.FormattingEnabled = true;
+            this.simulationSpeedComboBox.Location = new System.Drawing.Point(920, 244);
+            this.simulationSpeedComboBox.Name = "simulationSpeedComboBox";
+            this.simulationSpeedComboBox.Size = new System.Drawing.Size(60, 24);
+            this.simulationSpeedComboBox.TabIndex = 17;
+            this.simulationSpeedComboBox.SelectedIndexChanged += new System.EventHandler(this.SimulationSpeedComboBox_SelectedIndexChanged);
+            // 
             // WinFormsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 513);
+            this.Controls.Add(this.simulationSpeedComboBox);
+            this.Controls.Add(this.simulationSpeedLabel);
             this.Controls.Add(this.currentGenerationTimeLabel);
             this.Controls.Add(this.generationLifeTimeLabel);
             this.Controls.Add(this.generationLifeTimeTextBox);
@@ -213,5 +235,7 @@
         private System.Windows.Forms.TextBox generationLifeTimeTextBox;
         private System.Windows.Forms.Label generationLifeTimeLabel;
         private System.Windows.Forms.Label currentGenerationTimeLabel;
+        private System.Windows.Forms.Label simulationSpeedLabel;
+        private System.Windows.Forms.ComboBox simulationSpeedComboBox;
     }
 }
