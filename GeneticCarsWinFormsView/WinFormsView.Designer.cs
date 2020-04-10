@@ -45,9 +45,25 @@
             this.currentGenerationTimeLabel = new System.Windows.Forms.Label();
             this.simulationSpeedLabel = new System.Windows.Forms.Label();
             this.simulationSpeedComboBox = new System.Windows.Forms.ComboBox();
+            this.graphPictureBox = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.bestReusltEverLabel = new System.Windows.Forms.Label();
+            this.setLifeTimeLabel = new System.Windows.Forms.Label();
+            this.setLifeTimeButton = new System.Windows.Forms.Button();
+            this.fuelPerSquareMeterLabel = new System.Windows.Forms.Label();
+            this.setFuelPerSquareMeterLabel = new System.Windows.Forms.Label();
+            this.setFuelPerSquareMeterTextBox = new System.Windows.Forms.TextBox();
+            this.setFuelPerSquareMeterButton = new System.Windows.Forms.Button();
+            this.populationSaveButton = new System.Windows.Forms.Button();
+            this.populationLoadButton = new System.Windows.Forms.Button();
+            this.pauseButton = new System.Windows.Forms.Button();
+            this.createGroundButton = new System.Windows.Forms.Button();
+            this.hideShowButton = new System.Windows.Forms.Button();
+            this.finishSimulationButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.populationSizeUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.eliteClonesUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.graphPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -67,18 +83,18 @@
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(800, 0);
+            this.startButton.Location = new System.Drawing.Point(803, 46);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(180, 40);
             this.startButton.TabIndex = 1;
-            this.startButton.Text = "Start Simulation";
+            this.startButton.Text = "Create new population";
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.StartButton_Click);
             // 
             // populationSizeLabel
             // 
             this.populationSizeLabel.AutoSize = true;
-            this.populationSizeLabel.Location = new System.Drawing.Point(806, 48);
+            this.populationSizeLabel.Location = new System.Drawing.Point(806, 111);
             this.populationSizeLabel.Name = "populationSizeLabel";
             this.populationSizeLabel.Size = new System.Drawing.Size(104, 17);
             this.populationSizeLabel.TabIndex = 3;
@@ -87,7 +103,7 @@
             // eliteClonesLabel
             // 
             this.eliteClonesLabel.AutoSize = true;
-            this.eliteClonesLabel.Location = new System.Drawing.Point(806, 80);
+            this.eliteClonesLabel.Location = new System.Drawing.Point(806, 143);
             this.eliteClonesLabel.Name = "eliteClonesLabel";
             this.eliteClonesLabel.Size = new System.Drawing.Size(80, 17);
             this.eliteClonesLabel.TabIndex = 4;
@@ -95,7 +111,7 @@
             // 
             // populationSizeUpDown
             // 
-            this.populationSizeUpDown.Location = new System.Drawing.Point(920, 48);
+            this.populationSizeUpDown.Location = new System.Drawing.Point(920, 106);
             this.populationSizeUpDown.Name = "populationSizeUpDown";
             this.populationSizeUpDown.Size = new System.Drawing.Size(53, 22);
             this.populationSizeUpDown.TabIndex = 6;
@@ -103,7 +119,7 @@
             // 
             // eliteClonesUpDown
             // 
-            this.eliteClonesUpDown.Location = new System.Drawing.Point(920, 80);
+            this.eliteClonesUpDown.Location = new System.Drawing.Point(916, 138);
             this.eliteClonesUpDown.Name = "eliteClonesUpDown";
             this.eliteClonesUpDown.Size = new System.Drawing.Size(60, 22);
             this.eliteClonesUpDown.TabIndex = 7;
@@ -112,7 +128,7 @@
             // crossoverTypeLabel
             // 
             this.crossoverTypeLabel.AutoSize = true;
-            this.crossoverTypeLabel.Location = new System.Drawing.Point(807, 116);
+            this.crossoverTypeLabel.Location = new System.Drawing.Point(802, 176);
             this.crossoverTypeLabel.Name = "crossoverTypeLabel";
             this.crossoverTypeLabel.Size = new System.Drawing.Size(103, 17);
             this.crossoverTypeLabel.TabIndex = 8;
@@ -121,7 +137,7 @@
             // crossoverTypeComboBox
             // 
             this.crossoverTypeComboBox.FormattingEnabled = true;
-            this.crossoverTypeComboBox.Location = new System.Drawing.Point(916, 116);
+            this.crossoverTypeComboBox.Location = new System.Drawing.Point(916, 173);
             this.crossoverTypeComboBox.Name = "crossoverTypeComboBox";
             this.crossoverTypeComboBox.Size = new System.Drawing.Size(64, 24);
             this.crossoverTypeComboBox.TabIndex = 10;
@@ -130,7 +146,7 @@
             // mutationRateLabel
             // 
             this.mutationRateLabel.AutoSize = true;
-            this.mutationRateLabel.Location = new System.Drawing.Point(806, 144);
+            this.mutationRateLabel.Location = new System.Drawing.Point(802, 199);
             this.mutationRateLabel.Name = "mutationRateLabel";
             this.mutationRateLabel.Size = new System.Drawing.Size(91, 17);
             this.mutationRateLabel.TabIndex = 11;
@@ -139,7 +155,7 @@
             // mutationRateComboBox
             // 
             this.mutationRateComboBox.FormattingEnabled = true;
-            this.mutationRateComboBox.Location = new System.Drawing.Point(903, 146);
+            this.mutationRateComboBox.Location = new System.Drawing.Point(903, 196);
             this.mutationRateComboBox.Name = "mutationRateComboBox";
             this.mutationRateComboBox.Size = new System.Drawing.Size(70, 24);
             this.mutationRateComboBox.TabIndex = 12;
@@ -147,25 +163,25 @@
             // 
             // generationLifeTimeTextBox
             // 
-            this.generationLifeTimeTextBox.Location = new System.Drawing.Point(913, 193);
+            this.generationLifeTimeTextBox.Location = new System.Drawing.Point(879, 266);
             this.generationLifeTimeTextBox.Name = "generationLifeTimeTextBox";
-            this.generationLifeTimeTextBox.Size = new System.Drawing.Size(67, 22);
+            this.generationLifeTimeTextBox.Size = new System.Drawing.Size(30, 22);
             this.generationLifeTimeTextBox.TabIndex = 13;
             this.generationLifeTimeTextBox.TextChanged += new System.EventHandler(this.GenerationLifeTimeTextBox_TextChanged);
             // 
             // generationLifeTimeLabel
             // 
             this.generationLifeTimeLabel.AutoSize = true;
-            this.generationLifeTimeLabel.Location = new System.Drawing.Point(797, 173);
+            this.generationLifeTimeLabel.Location = new System.Drawing.Point(802, 232);
             this.generationLifeTimeLabel.Name = "generationLifeTimeLabel";
-            this.generationLifeTimeLabel.Size = new System.Drawing.Size(167, 17);
+            this.generationLifeTimeLabel.Size = new System.Drawing.Size(181, 17);
             this.generationLifeTimeLabel.TabIndex = 14;
-            this.generationLifeTimeLabel.Text = "Generation life time (sec)";
+            this.generationLifeTimeLabel.Text = "Generation life time: 20 sec";
             // 
             // currentGenerationTimeLabel
             // 
             this.currentGenerationTimeLabel.AutoSize = true;
-            this.currentGenerationTimeLabel.Location = new System.Drawing.Point(806, 210);
+            this.currentGenerationTimeLabel.Location = new System.Drawing.Point(794, 295);
             this.currentGenerationTimeLabel.Name = "currentGenerationTimeLabel";
             this.currentGenerationTimeLabel.Size = new System.Drawing.Size(185, 17);
             this.currentGenerationTimeLabel.TabIndex = 15;
@@ -174,7 +190,7 @@
             // simulationSpeedLabel
             // 
             this.simulationSpeedLabel.AutoSize = true;
-            this.simulationSpeedLabel.Location = new System.Drawing.Point(807, 244);
+            this.simulationSpeedLabel.Location = new System.Drawing.Point(793, 335);
             this.simulationSpeedLabel.Name = "simulationSpeedLabel";
             this.simulationSpeedLabel.Size = new System.Drawing.Size(116, 17);
             this.simulationSpeedLabel.TabIndex = 16;
@@ -183,17 +199,174 @@
             // simulationSpeedComboBox
             // 
             this.simulationSpeedComboBox.FormattingEnabled = true;
-            this.simulationSpeedComboBox.Location = new System.Drawing.Point(920, 244);
+            this.simulationSpeedComboBox.Location = new System.Drawing.Point(923, 325);
             this.simulationSpeedComboBox.Name = "simulationSpeedComboBox";
             this.simulationSpeedComboBox.Size = new System.Drawing.Size(60, 24);
             this.simulationSpeedComboBox.TabIndex = 17;
             this.simulationSpeedComboBox.SelectedIndexChanged += new System.EventHandler(this.SimulationSpeedComboBox_SelectedIndexChanged);
             // 
+            // graphPictureBox
+            // 
+            this.graphPictureBox.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.graphPictureBox.Location = new System.Drawing.Point(0, 406);
+            this.graphPictureBox.Name = "graphPictureBox";
+            this.graphPictureBox.Size = new System.Drawing.Size(411, 240);
+            this.graphPictureBox.TabIndex = 18;
+            this.graphPictureBox.TabStop = false;
+            this.graphPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.GraphPictureBox_Paint);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(417, 629);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(63, 17);
+            this.label1.TabIndex = 19;
+            this.label1.Text = "0 meters";
+            // 
+            // bestReusltEverLabel
+            // 
+            this.bestReusltEverLabel.AutoSize = true;
+            this.bestReusltEverLabel.Location = new System.Drawing.Point(417, 406);
+            this.bestReusltEverLabel.Name = "bestReusltEverLabel";
+            this.bestReusltEverLabel.Size = new System.Drawing.Size(63, 17);
+            this.bestReusltEverLabel.TabIndex = 20;
+            this.bestReusltEverLabel.Text = "0 meters";
+            // 
+            // setLifeTimeLabel
+            // 
+            this.setLifeTimeLabel.AutoSize = true;
+            this.setLifeTimeLabel.Location = new System.Drawing.Point(793, 266);
+            this.setLifeTimeLabel.Name = "setLifeTimeLabel";
+            this.setLifeTimeLabel.Size = new System.Drawing.Size(81, 17);
+            this.setLifeTimeLabel.TabIndex = 21;
+            this.setLifeTimeLabel.Text = "Set life time";
+            // 
+            // setLifeTimeButton
+            // 
+            this.setLifeTimeButton.Location = new System.Drawing.Point(903, 263);
+            this.setLifeTimeButton.Name = "setLifeTimeButton";
+            this.setLifeTimeButton.Size = new System.Drawing.Size(82, 28);
+            this.setLifeTimeButton.TabIndex = 22;
+            this.setLifeTimeButton.Text = "Set";
+            this.setLifeTimeButton.UseVisualStyleBackColor = true;
+            this.setLifeTimeButton.Click += new System.EventHandler(this.SetLifeTimeButton_Click);
+            // 
+            // fuelPerSquareMeterLabel
+            // 
+            this.fuelPerSquareMeterLabel.AutoSize = true;
+            this.fuelPerSquareMeterLabel.Location = new System.Drawing.Point(798, 352);
+            this.fuelPerSquareMeterLabel.Name = "fuelPerSquareMeterLabel";
+            this.fuelPerSquareMeterLabel.Size = new System.Drawing.Size(172, 17);
+            this.fuelPerSquareMeterLabel.TabIndex = 23;
+            this.fuelPerSquareMeterLabel.Text = "Fuel per square meter: 12";
+            // 
+            // setFuelPerSquareMeterLabel
+            // 
+            this.setFuelPerSquareMeterLabel.AutoSize = true;
+            this.setFuelPerSquareMeterLabel.Location = new System.Drawing.Point(778, 373);
+            this.setFuelPerSquareMeterLabel.Name = "setFuelPerSquareMeterLabel";
+            this.setFuelPerSquareMeterLabel.Size = new System.Drawing.Size(119, 17);
+            this.setFuelPerSquareMeterLabel.TabIndex = 24;
+            this.setFuelPerSquareMeterLabel.Text = "Set fuel per sq.m.";
+            // 
+            // setFuelPerSquareMeterTextBox
+            // 
+            this.setFuelPerSquareMeterTextBox.Location = new System.Drawing.Point(900, 373);
+            this.setFuelPerSquareMeterTextBox.Name = "setFuelPerSquareMeterTextBox";
+            this.setFuelPerSquareMeterTextBox.Size = new System.Drawing.Size(43, 22);
+            this.setFuelPerSquareMeterTextBox.TabIndex = 25;
+            // 
+            // setFuelPerSquareMeterButton
+            // 
+            this.setFuelPerSquareMeterButton.Location = new System.Drawing.Point(949, 372);
+            this.setFuelPerSquareMeterButton.Name = "setFuelPerSquareMeterButton";
+            this.setFuelPerSquareMeterButton.Size = new System.Drawing.Size(34, 23);
+            this.setFuelPerSquareMeterButton.TabIndex = 26;
+            this.setFuelPerSquareMeterButton.Text = "Set";
+            this.setFuelPerSquareMeterButton.UseVisualStyleBackColor = true;
+            this.setFuelPerSquareMeterButton.Click += new System.EventHandler(this.SetFuelPerSquareMeterButton_Click);
+            // 
+            // populationSaveButton
+            // 
+            this.populationSaveButton.Location = new System.Drawing.Point(613, 471);
+            this.populationSaveButton.Name = "populationSaveButton";
+            this.populationSaveButton.Size = new System.Drawing.Size(179, 47);
+            this.populationSaveButton.TabIndex = 27;
+            this.populationSaveButton.Text = "Save population";
+            this.populationSaveButton.UseVisualStyleBackColor = true;
+            this.populationSaveButton.Click += new System.EventHandler(this.PopulationSaveButton_Click);
+            // 
+            // populationLoadButton
+            // 
+            this.populationLoadButton.Location = new System.Drawing.Point(796, 474);
+            this.populationLoadButton.Name = "populationLoadButton";
+            this.populationLoadButton.Size = new System.Drawing.Size(183, 44);
+            this.populationLoadButton.TabIndex = 28;
+            this.populationLoadButton.Text = "Load population";
+            this.populationLoadButton.UseVisualStyleBackColor = true;
+            this.populationLoadButton.Click += new System.EventHandler(this.PopulationLoadButton_Click);
+            // 
+            // pauseButton
+            // 
+            this.pauseButton.Location = new System.Drawing.Point(798, 414);
+            this.pauseButton.Name = "pauseButton";
+            this.pauseButton.Size = new System.Drawing.Size(178, 40);
+            this.pauseButton.TabIndex = 29;
+            this.pauseButton.Text = "Pause";
+            this.pauseButton.UseVisualStyleBackColor = true;
+            this.pauseButton.Click += new System.EventHandler(this.PauseButton_Click);
+            // 
+            // createGroundButton
+            // 
+            this.createGroundButton.Location = new System.Drawing.Point(802, 0);
+            this.createGroundButton.Name = "createGroundButton";
+            this.createGroundButton.Size = new System.Drawing.Size(177, 40);
+            this.createGroundButton.TabIndex = 30;
+            this.createGroundButton.Text = "Create ground";
+            this.createGroundButton.UseVisualStyleBackColor = true;
+            this.createGroundButton.Click += new System.EventHandler(this.CreateGroundButton_Click);
+            // 
+            // hideShowButton
+            // 
+            this.hideShowButton.Location = new System.Drawing.Point(613, 415);
+            this.hideShowButton.Name = "hideShowButton";
+            this.hideShowButton.Size = new System.Drawing.Size(179, 39);
+            this.hideShowButton.TabIndex = 31;
+            this.hideShowButton.Text = "Hide/Show";
+            this.hideShowButton.UseVisualStyleBackColor = true;
+            this.hideShowButton.Click += new System.EventHandler(this.HideShowButton_Click);
+            // 
+            // finishSimulationButton
+            // 
+            this.finishSimulationButton.Location = new System.Drawing.Point(613, 524);
+            this.finishSimulationButton.Name = "finishSimulationButton";
+            this.finishSimulationButton.Size = new System.Drawing.Size(179, 46);
+            this.finishSimulationButton.TabIndex = 32;
+            this.finishSimulationButton.Text = "Finish simulation";
+            this.finishSimulationButton.UseVisualStyleBackColor = true;
+            this.finishSimulationButton.Click += new System.EventHandler(this.FinishSimulationButton_Click);
+            // 
             // WinFormsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(982, 513);
+            this.ClientSize = new System.Drawing.Size(982, 653);
+            this.Controls.Add(this.finishSimulationButton);
+            this.Controls.Add(this.hideShowButton);
+            this.Controls.Add(this.createGroundButton);
+            this.Controls.Add(this.pauseButton);
+            this.Controls.Add(this.populationLoadButton);
+            this.Controls.Add(this.populationSaveButton);
+            this.Controls.Add(this.setFuelPerSquareMeterButton);
+            this.Controls.Add(this.setFuelPerSquareMeterTextBox);
+            this.Controls.Add(this.setFuelPerSquareMeterLabel);
+            this.Controls.Add(this.fuelPerSquareMeterLabel);
+            this.Controls.Add(this.setLifeTimeButton);
+            this.Controls.Add(this.setLifeTimeLabel);
+            this.Controls.Add(this.bestReusltEverLabel);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.graphPictureBox);
             this.Controls.Add(this.simulationSpeedComboBox);
             this.Controls.Add(this.simulationSpeedLabel);
             this.Controls.Add(this.currentGenerationTimeLabel);
@@ -214,6 +387,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.populationSizeUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.eliteClonesUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.graphPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -237,5 +411,20 @@
         private System.Windows.Forms.Label currentGenerationTimeLabel;
         private System.Windows.Forms.Label simulationSpeedLabel;
         private System.Windows.Forms.ComboBox simulationSpeedComboBox;
+        private System.Windows.Forms.PictureBox graphPictureBox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label bestReusltEverLabel;
+        private System.Windows.Forms.Label setLifeTimeLabel;
+        private System.Windows.Forms.Button setLifeTimeButton;
+        private System.Windows.Forms.Label fuelPerSquareMeterLabel;
+        private System.Windows.Forms.Label setFuelPerSquareMeterLabel;
+        private System.Windows.Forms.TextBox setFuelPerSquareMeterTextBox;
+        private System.Windows.Forms.Button setFuelPerSquareMeterButton;
+        private System.Windows.Forms.Button populationSaveButton;
+        private System.Windows.Forms.Button populationLoadButton;
+        private System.Windows.Forms.Button pauseButton;
+        private System.Windows.Forms.Button createGroundButton;
+        private System.Windows.Forms.Button hideShowButton;
+        private System.Windows.Forms.Button finishSimulationButton;
     }
 }

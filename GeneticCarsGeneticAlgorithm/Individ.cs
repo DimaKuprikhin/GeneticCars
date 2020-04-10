@@ -14,10 +14,13 @@ namespace GeneticCarsGeneticAlgorithm
 
         public double FitnessValue { get; set; }
 
-        public Individ(int geneSize)
+        public Individ(int geneSize, byte[] genes = null)
         {
             GeneSize = geneSize;
             Genes = new byte[GeneSize / 8 + (GeneSize % 8 == 0 ? 0 : 1)];
+            if(genes != null)
+                for(int i = 0; i < geneSize / 8; ++i)
+                    Genes[i] = genes[i];
         }
 
         /// <summary>

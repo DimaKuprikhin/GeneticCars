@@ -1,25 +1,30 @@
 ﻿using FarseerPhysics.Common;
+using Microsoft.Xna.Framework;
 
 namespace GeneticCarsPhysicsEngine
 {
-    enum ObjectType { Circle, Polygon };
+    public enum ObjectType { Circle, Polygon };
     /// <summary>
     /// Информация об объекте.
     /// </summary>
-    class ObjectInfo
+    public class ObjectInfo
     {
         public readonly ObjectType Type;
         public readonly Vertices vertices;
         public readonly float Radius;
-        public readonly int[] Color;
+        public readonly Color ObjectColor;
+
+        public Vector2 CircleCenter { get; set; }
+
+        public Vector2 CircleAngle { get; set; }
 
         public ObjectInfo(Vertices vertices, float radius, ObjectType type,
-            int[] color)
+            Color color)
         {
             this.vertices = vertices;
             Radius = radius;
             Type = type;
-            Color = color;
+            ObjectColor = color;
         }
     }
 }

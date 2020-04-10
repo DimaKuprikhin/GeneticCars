@@ -42,10 +42,20 @@ namespace GeneticCarsGeneticAlgorithm
 
         public double MutationRate { get; set; }
 
-        public GeneticAlgorithm(int populationSize, int geneSize)
+        public GeneticAlgorithm(int populationSize, int geneSize, byte[][] genes = null)
         {
             GeneSize = geneSize;
-            PopulationSize = populationSize;
+            if(genes != null)
+            {
+                for(int i = 0; i < populationSize; ++i)
+                {
+                    population.Add(new Individ(geneSize, genes[i]));
+                }
+            }
+            else
+            {
+                PopulationSize = populationSize;
+            }
             GenerationCount = 0;
             EliteClones = 1;
             MutationRate = 0.01;
@@ -59,13 +69,15 @@ namespace GeneticCarsGeneticAlgorithm
         /// </summary>
         private void AddRandomIndivid(int number)
         {
+            byte[] genes = new byte[GeneSize];
             for(int i = 0; i < number; i++)
             {
-                Individ newIndivid = new Individ(GeneSize);
                 for(int j = 0; j < GeneSize; j++)
                 {
-                    newIndivid.SetGene(j, rnd.Next(0, 2));
+                    genes[j] = (byte)rnd.Next(0, 256);
                 }
+                Individ newIndivid = new Individ(GeneSize, genes);
+                
                 population.Add(newIndivid);
             }
         }

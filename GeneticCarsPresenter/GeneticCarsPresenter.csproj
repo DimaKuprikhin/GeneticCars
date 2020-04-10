@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FarseerPhysics, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\FarseerPhysics.dll</HintPath>
+    </Reference>
     <Reference Include="GeneticCarsGeneticAlgorithm">
       <HintPath>..\GeneticCarsGeneticAlgorithm\bin\Debug\GeneticCarsGeneticAlgorithm.dll</HintPath>
     </Reference>

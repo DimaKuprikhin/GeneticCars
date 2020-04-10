@@ -33,6 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FarseerPhysics, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\GeneticCarsPresenter\FarseerPhysics.dll</HintPath>
+    </Reference>
+    <Reference Include="GeneticCarsPhysicsEngine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\GeneticCarsPhysicsEngine\bin\Debug\GeneticCarsPhysicsEngine.dll</HintPath>
+    </Reference>
     <Reference Include="GeneticCarsPresenter">
       <HintPath>..\GeneticCarsPresenter\bin\Debug\GeneticCarsPresenter.dll</HintPath>
     </Reference>

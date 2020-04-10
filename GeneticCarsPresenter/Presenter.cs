@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using GeneticCarsPhysicsEngine;
 using GeneticCarsGeneticAlgorithm;
+using Microsoft.Xna.Framework;
 
 namespace GeneticCarsPresenter
 {
@@ -20,12 +20,23 @@ namespace GeneticCarsPresenter
 
         private float simulationSpeed = 1.0f;
 
+        /// <summary> Массив лучших результатов поколений. </summary>
+        private List<float> bestResults = new List<float>();
+
+        /// <summary> Массив средних резьльтатов поколений. </summary>
+        private List<float> averageResults = new List<float>();
+
+        private float fuelPerSquareMeter = 12;
+
         public Presenter(IWinFormsView view)
         {
             this.view = view;
-            view.start += new EventHandler<EventArgs>(OnStartSimulation);
+            view.createPopulation += new EventHandler<EventArgs>(OnCreatePopulation);
+            view.createGround += new EventHandler<EventArgs>(OnCreateGround);
+            view.finishSimulation += new EventHandler<EventArgs>(OnFinishSimulation);
             view.step += new EventHandler<EventArgs>(OnStep);
             view.paint += new EventHandler<EventArgs>(OnPaint);
+            view.graphPaint += new EventHandler<EventArgs>(OnGraphPaint);
             view.populationSizeChanged += 
                 new EventHandler<EventArgs>(OnPopulationSizeChanged);
             view.eliteClonesChanged += 
@@ -38,8 +49,14 @@ namespace GeneticCarsPresenter
                 new EventHandler<EventArgs>(OnGenerationLifeTimeChanged);
             view.simulationSpeedChanged += 
                 new EventHandler<EventArgs>(OnSimulationSpeedChanged);
-
-            algorithm = new GeneticAlgorithm(4, 96);
+            view.fuelPerSquareMeterSet +=
+                new EventHandler<EventArgs>(OnFuelPerSquareMeterSet);
+            view.populatioinSaveButtonClick +=
+                new EventHandler<EventArgs>(OnSavePopulation);
+            view.populatioinLoadButtonClick +=
+                new EventHandler<EventArgs>(OnLoadPopulation);
+            //algorithm = new GeneticAlgorithm(view.PopulationSize, 96);
+            OnCreateGround(this, EventArgs.Empty);
         }
 
         private const float minCarSize = 6.0f;
@@ -48,7 +65,7 @@ namespace GeneticCarsPresenter
         private const float minWheelRadius = 1.0f;
         private const float maxWheelRadius = 2.0f;
         private const float minCarSpeed = 10.0f;
-        private const float maxCarSpeed = 20.0f;
+        private const float maxCarSpeed = 50.0f;
         /// <summary>
         /// Переводит гены особи в ее физический образ.
         /// Геном:
@@ -57,17 +74,17 @@ namespace GeneticCarsPresenter
         /// 8 бит - радиус первого колеса
         /// 8 бит - радиус второго колеса
         /// 8 бит - угол первого колеса
-        /// 8 бит - кгол второго колеса
+        /// 8 бит - угол второго колеса
         /// 8 бит - скорость машинки (угловая скорость колес)
         /// </summary>
         private void ConvertGenesToCars()
         {
             byte[][] genes = algorithm.GetPopulationInfo();
-            
+
             for(int i = 0; i < genes.GetLength(0); i++)
             {
                 // Размер машинки.
-                float carSize = minCarSize + (maxCarSize - minCarSize) * 
+                float carSize = minCarSize + (maxCarSize - minCarSize) *
                     ((float)genes[i][0] / 256.0f);
                 // Значения углов вершин.
                 List<float> angles = new List<float>(vertexNumber);
@@ -80,13 +97,13 @@ namespace GeneticCarsPresenter
                 // Радиусы колес.
                 float firstWheelRadius = minWheelRadius +
                     (maxWheelRadius - minWheelRadius) * ((float)genes[i][7] / 256.0f);
-                float secondWheelRadius = minWheelRadius + 
+                float secondWheelRadius = minWheelRadius +
                     (maxWheelRadius - minWheelRadius) * ((float)genes[i][8] / 256.0f);
 
                 // Значения углов колес.
-                float firstWheelAngle = 2.0f * (float)Math.PI * 
+                float firstWheelAngle = 2.0f * (float)Math.PI *
                     ((float)genes[i][9] / 256.0f);
-                float secondWheelAngle = 2.0f * (float)Math.PI * 
+                float secondWheelAngle = 2.0f * (float)Math.PI *
                     ((float)genes[i][10] / 256.0f);
 
                 // Скорость машинки.
@@ -94,27 +111,28 @@ namespace GeneticCarsPresenter
                     ((float)genes[i][11] / 256.0f);
 
                 // Вычисляем координаты вершин.
-                float[][] vertices = new float[vertexNumber][];
+                Vector2[] vertices = new Vector2[vertexNumber];
                 for(int j = 0; j < vertexNumber; j++)
                 {
-                    vertices[j] = new float[2]{carSize * (float)Math.Cos(angles[j]),
-                        carSize * (float)Math.Sin(angles[j])};
+                    vertices[j] = new Vector2(carSize * (float)Math.Cos(angles[j]),
+                        carSize * (float)Math.Sin(angles[j]));
                 }
 
                 // Вычисляем координаты колес.
-                float[] firstWheelPosition = new float[2]{
+                Vector2 firstWheelPosition = new Vector2(
                     carSize * (float)Math.Cos(firstWheelAngle),
-                    carSize * (float)Math.Sin(firstWheelAngle)};
-                float[] secondWheelPosition = new float[2]{
+                    carSize * (float)Math.Sin(firstWheelAngle));
+                Vector2 secondWheelPosition = new Vector2(
                     carSize * (float)Math.Cos(secondWheelAngle),
-                    carSize * (float)Math.Sin(secondWheelAngle)};
+                    carSize * (float)Math.Sin(secondWheelAngle));
 
                 // Передвигаем центры колес на ребра корпуса машинки.
-                float[] firstWheelPositionOnCar = new float[2];
-                float[] secondWheelPositionOnCar = new float[2];
+                Vector2 firstWheelPositionOnCar = new Vector2();
+                Vector2 secondWheelPositionOnCar = new Vector2();
                 // Определяем, между какими соседними углами вершин корпуса
                 // находятся колеса.
-                for(int j = 1; j <= angles.Count; j++) {
+                for(int j = 1; j <= angles.Count; j++)
+                {
                     float firstAngle = angles[j - 1];
                     float secondAngle = angles[j % angles.Count];
                     float circle = (float)Math.PI * 2;
@@ -124,28 +142,31 @@ namespace GeneticCarsPresenter
                     if(secondAngle < firstAngle)
                         secondAngle += circle;
                     // Если угол колеса лежит между соседними углами вершин.
-                    if((firstAngle <= firstWheelAngle && 
+                    if((firstAngle <= firstWheelAngle &&
                         firstWheelAngle <= secondAngle) ||
                         (firstAngle - circle <= firstWheelAngle &&
-                        firstWheelAngle <= secondAngle - circle)) {
+                        firstWheelAngle <= secondAngle - circle))
+                    {
                         // Вычисляем позицию колеса на корпусе как точку 
                         // пересечения прямой, включающей центр машинки и 
                         // координату колеса, и прямой, включающей соседние вершины.
                         firstWheelPositionOnCar =
                             GetIntersectionPoint(
-                                new float[2] { 0, 0 }, firstWheelPosition,
+                                new Vector2(0, 0), firstWheelPosition,
                                 vertices[j - 1], vertices[j % angles.Count]);
                         // Если пересечение прямых за пределами машинки.
-                        if(Math.Pow(firstWheelPositionOnCar[0], 2) +
-                            Math.Pow(firstWheelPositionOnCar[1], 2) >=
+                        if(Math.Pow(firstWheelPositionOnCar.X, 2) +
+                            Math.Pow(firstWheelPositionOnCar.Y, 2) >=
                             Math.Pow(carSize, 2))
                         {
                             // Перемещаем колесо к ближайшей по углу вершине.
                             if(Math.Abs(firstWheelAngle - firstAngle) <
-                                Math.Abs(firstWheelAngle - secondAngle)){
+                                Math.Abs(firstWheelAngle - secondAngle))
+                            {
                                 firstWheelPositionOnCar = vertices[j - 1];
                             }
-                            else {
+                            else
+                            {
                                 firstWheelPositionOnCar = vertices[j % angles.Count];
                             }
                         }
@@ -153,15 +174,15 @@ namespace GeneticCarsPresenter
                     // Аналогично для второго колеса.
                     if((firstAngle <= secondWheelAngle &&
                         secondWheelAngle <= secondAngle) ||
-                        (firstAngle - circle <= secondWheelAngle && 
+                        (firstAngle - circle <= secondWheelAngle &&
                         secondWheelAngle <= secondAngle - circle))
                     {
                         secondWheelPositionOnCar =
                             GetIntersectionPoint(
-                                new float[2] { 0, 0 }, secondWheelPosition,
+                                new Vector2(0, 0), secondWheelPosition,
                                 vertices[j - 1], vertices[j % angles.Count]);
-                        if(Math.Pow(secondWheelPositionOnCar[0], 2) +
-                            Math.Pow(secondWheelPositionOnCar[1], 2) >=
+                        if(Math.Pow(secondWheelPositionOnCar.X, 2) +
+                            Math.Pow(secondWheelPositionOnCar.Y, 2) >=
                             Math.Pow(carSize, 2))
                         {
                             if(Math.Abs(secondWheelAngle - firstAngle) <
@@ -177,8 +198,19 @@ namespace GeneticCarsPresenter
                     }
                 }
 
+                float square = 0;
+                for(int j = 2; j < vertices.Length; ++j)
+                {
+                    square += 0.5f * Math.Abs(
+                        (vertices[j - 1].X - vertices[0].X) * 
+                        (vertices[j].Y - vertices[0].Y) - 
+                        (vertices[j - 1].Y - vertices[0].Y) *
+                        (vertices[j].X - vertices[0].X));
+                }
+
                 // Добавляем машинку с расшифрованными параметрами.
-                physics.AddCar(vertices, speed, firstWheelRadius, secondWheelRadius,
+                physics.AddCar(vertices, speed, fuelPerSquareMeter * square, 
+                    firstWheelRadius, secondWheelRadius,
                     firstWheelPositionOnCar, secondWheelPositionOnCar, i + 1);
             }
         }
@@ -192,32 +224,64 @@ namespace GeneticCarsPresenter
         /// <param name="d"> Две координаты второй точки второй прямой. </param>
         /// <returns> Возвращает массив из 2 чисел - координат точки пересечения.
         /// </returns>
-        private float[] GetIntersectionPoint(float[] a, float[] b, 
-            float[] c, float[] d)
+        private Vector2 GetIntersectionPoint(Vector2 a, Vector2 b, 
+            Vector2 c, Vector2 d)
         {
             // Вычисляем коэффициенты общих уравнений прямых.
-            float firstA = a[1] - b[1];
-            float firstB = b[0] - a[0];
-            float firstC = -firstA * a[0] - firstB * a[1];
+            float firstA = a.Y - b.Y;
+            float firstB = b.X - a.X;
+            float firstC = -firstA * a.X - firstB * a.Y;
 
-            float secondA = c[1] - d[1];
-            float secondB = d[0] - c[0];
-            float secondC = -secondA * c[0] - secondB * c[1];
+            float secondA = c.Y - d.Y;
+            float secondB = d.X - c.X;
+            float secondC = -secondA * c.X - secondB * c.Y;
 
             // Получаем точку пересечения.
             float zn = firstA * secondB - firstB * secondA;
             float xInter = -(firstC * secondB - firstB * secondC) / zn;
             float yInter = -(firstA * secondC - firstC * secondA) / zn;
-            return new float[2] { xInter, yInter };
+            return new Vector2(xInter, yInter);
         }
 
-        private void OnStartSimulation(object sender, EventArgs e)
+        private void OnCreatePopulation(object sender, EventArgs e)
         {
-            // Задаем гравитацию и землю.
-            physics = new Physics(0, -20.0f);
-            SetRandomGround((float)Math.PI / 8, 20, -50, 20, 10000, 5, 45);
+            if(algorithm != null)
+            {
+                view.ShowMessage("Невозможно создать новую популяцию, пока не " +
+                    "завершена текущая симуляция. Завершите текущюю, а затем " +
+                    "сгенерируйте новую, или загрузите сохраненную популяцию.", "");
+                return;
+            }
+            algorithm = new GeneticAlgorithm(view.PopulationSize, 96);
+            SetAlgorithmSettings();
             // Переводим гены в машинки.
             ConvertGenesToCars();
+
+            bestResults = new List<float>();
+            averageResults = new List<float>();
+            bestResults.Add(0);
+            averageResults.Add(0);
+        }
+
+        private void OnCreateGround(object sender, EventArgs e)
+        {
+            if(algorithm != null)
+            {
+                view.ShowMessage("Невозможно сгенерировать новую поверхность во время " +
+                    "симуляции. Сохраните популяцию и завершите текущюю симуляцию, а " +
+                    "затем сгенерируйте новую поверхность и загрузите сохраненную " +
+                    "популяцию.", "");
+                return;
+            }
+            // Задаем гравитацию и землю.
+            physics = new Physics(0, -30.0f);
+            SetRandomGround((float)Math.PI / 5, 20, -80, 20, 30000, 5, 45);
+        }
+
+        private void OnFinishSimulation(object sender, EventArgs e)
+        {
+            algorithm = null;
+            physics.RemoveCars();
         }
 
         /// <summary>
@@ -237,15 +301,15 @@ namespace GeneticCarsPresenter
             float lowerBound, float upperBound)
         {
             Random rnd = new Random();
-            List<float[]> groundPoints = new List<float[]>();
-            groundPoints.Add(new float[2] { beginX, beginY });
-            while(groundPoints[groundPoints.Count - 1][0] < endX)
+            List<Vector2> groundPoints = new List<Vector2>();
+            groundPoints.Add(new Vector2(beginX, beginY));
+            while(groundPoints[groundPoints.Count - 1].X < endX)
             {
                 float angle = ((float)rnd.NextDouble() * 2.0f - 1.0f) * maxAngle;
                 float edgeLength = (float)Math.Max(rnd.NextDouble(), 0.01) * 
                     Math.Max(maxEdgeLength, 0.1f);
                 // Проеверяем, не выходит ли новое ребро за пределы.
-                if(groundPoints[groundPoints.Count - 1][1] +
+                if(groundPoints[groundPoints.Count - 1].Y +
                     edgeLength * (float)Math.Sin(angle) > upperBound)
                 {
                     //edgeLength *= 
@@ -253,7 +317,7 @@ namespace GeneticCarsPresenter
                     //    (edgeLength * (float)Math.Sin(angle));
                     angle *= (-1);
                 }
-                if(groundPoints[groundPoints.Count - 1][1] +
+                if(groundPoints[groundPoints.Count - 1].Y +
                    edgeLength * (float)Math.Sin(angle) < lowerBound)
                 {
                     //edgeLength *=
@@ -262,103 +326,132 @@ namespace GeneticCarsPresenter
                     angle *= (-1);
                 }
 
-                groundPoints.Add(new float[2]{
-                    groundPoints[groundPoints.Count - 1][0] +
+                groundPoints.Add(new Vector2(
+                    groundPoints[groundPoints.Count - 1].X +
                     edgeLength * (float)Math.Cos(angle),
-                    groundPoints[groundPoints.Count - 1][1] + 
-                    edgeLength * (float)Math.Sin(angle)});
+                    groundPoints[groundPoints.Count - 1].Y + 
+                    edgeLength * (float)Math.Sin(angle)));
             }
-            float[][] ground = new float[groundPoints.Count][];
+            Vector2[] ground = new Vector2[groundPoints.Count];
             for(int i = 0; i < groundPoints.Count; i++)
             {
-                ground[i] = new float[2] { groundPoints[i][0], groundPoints[i][1] };
+                ground[i] = new Vector2(groundPoints[i].X, groundPoints[i].Y);
             }
             physics.SetGround(ground, -10);
         }
 
         private void OnPaint(object sender, EventArgs e)
         {
-            if(physics == null)
+            if(view.IsHide)
                 return;
 
             // Найдем машинку с максимальной координатой X, чтобы отрисовывать
             // все остальное относительно нее.
-            float maxX = 0;
+            float maxX = 20;
             float maxY = 0;
             for(int i = 0; i < physics.CarsCount; i++)
             {
-                float[] center = physics.GetCarCenter(i);
-                if(maxX < center[0])
+                Vector2 center = physics.GetCarCenter(i);
+                if(physics.Cars[i].FuelRefillCount < (int)center.X / 500)
                 {
-                    maxX = center[0];
-                    maxY = center[1];
+                    physics.Cars[i].RefillFuel();
+                }
+                if(maxX < center.X)
+                {
+                    maxX = center.X;
+                    maxY = center.Y;
                 }
             }
+            Console.WriteLine($"{maxX}");
             // Переводим в координаты формы.
             maxX = maxX * PixelPerMeter - view.GetWidth / 2;
             maxY = maxY * PixelPerMeter - view.GetHeight / 2;
-            
+
+            float[] fuels = physics.GetCarFuels();
+
             for(int i = 0; i < physics.CarsCount; i++)
             {
                 // Получаем цвета машинки.
-                int[][] colors = physics.GetCarColors(i);
+                Color[] colors = physics.GetCarColors(i);
                 // Получаем координаты вершин корпуса машинки.
-                float[][] verts = physics.GetCarBodyCoordinates(i);
+                Vector2[] verts = physics.GetCarBodyCoordinates(i);
                 // Переводим в координаты формы.
-                float[][] vertices = new float[verts.GetLength(0)][];
-                for(int j = 0; j < verts.GetLength(0); j++)
+                Vector2[] vertices = new Vector2[verts.Length];
+                for(int j = 0; j < verts.Length; j++)
                 {
-                    vertices[j] = new float[2]{verts[j][0] * PixelPerMeter - maxX,
-                    verts[j][1] * PixelPerMeter}; // -maxY
-                    vertices[j][1] = view.GetHeight - vertices[j][1];
+                    vertices[j] = new Vector2(verts[j].X * PixelPerMeter - maxX,
+                    verts[j].Y * PixelPerMeter); // -maxY
+                    vertices[j].Y = view.GetHeight - vertices[j].Y;
                 }
                 // Выведем корпус.
-                view.ShowPolygon(vertices, colors[0]);
+                view.ShowPolygon(vertices, colors[0], (int)(255 * fuels[i]));
 
                 // Получим информацию о колесах.
-                float[][] wheels = physics.GetCarWheelsCoordinates(i);
+                ObjectInfo[] wheels = physics.GetCarWheelsCoordinates(i);
                 // Position.x, Position.y, radius, cos, sin
-                float[] first = new float[5];
-                float[] second = new float[5];
-                for(int j = 0; j < 3; j++)
-                {
-                    first[j] = wheels[0][j] * PixelPerMeter;
-                    second[j] = wheels[1][j] * PixelPerMeter;
-                }
+                Vector2 firstCenter = wheels[0].CircleCenter;
+                firstCenter *= PixelPerMeter;
+                firstCenter.X -= maxX;
+                firstCenter.Y = view.GetHeight - firstCenter.Y;
+
+                Vector2 secondCenter = wheels[1].CircleCenter;
+                secondCenter *= PixelPerMeter;
+                secondCenter.X -= maxX;
+                secondCenter.Y = view.GetHeight - secondCenter.Y;
+
+                float firstRadius = wheels[0].Radius * PixelPerMeter;
+                float secondRadius = wheels[1].Radius * PixelPerMeter;
+                float firstCos = wheels[0].CircleAngle.X;
+                float firstSin = wheels[0].CircleAngle.Y;
+                float secondCos = wheels[1].CircleAngle.X;
+                float secondSin = wheels[1].CircleAngle.Y;
+
                 // Выведем первое колесо.
-                view.ShowCircle(first[0] - maxX,
-                    //view.GetHeight - (first[1] - maxY), first[2],
-                    view.GetHeight - (first[1]), first[2],
-                    colors[1], first[2] * wheels[0][3], first[2] * wheels[0][4]);
+                view.ShowCircle(firstCenter, firstRadius,
+                    colors[1],
+                    new Vector2(firstRadius * firstCos, firstRadius * firstSin));
                 // Выведем второе колесо.
-                view.ShowCircle(second[0] - maxX,
-                    //view.GetHeight - (second[1] - maxY), second[2], 
-                    view.GetHeight - (second[1]), second[2], 
-                    colors[2], second[2] * wheels[1][3], second[2] * wheels[1][4]);
+                view.ShowCircle(secondCenter, secondRadius,
+                    colors[2], new Vector2(secondRadius * secondCos,
+                    secondRadius * secondSin));
             }
 
-            // Выведем землю.
-            if(physics.HasGround)
+            for(int i = (int)maxX / 3500 * 3500,
+                j = 0; j < 2; ++j, i += 500 * (int)PixelPerMeter)
             {
-                float[][] ground = physics.GetGround();
-                float[][] points = new float[ground.GetLength(0)][];
-                for(int i = 0; i < ground.GetLength(0); i++)
-                {
-                    points[i] = new float[2]{ground[i][0] * PixelPerMeter - maxX,
-                        //view.GetHeight - (ground[i][1] * PixelPerMeter - maxY) };
-                        view.GetHeight - (ground[i][1] * PixelPerMeter) };
-                }
-                view.ShowPolygon(points, new int[3] { 0, 0, 0 });
+                if(i == 0)
+                    continue;
+                view.ShowLine(new Vector2(i - maxX, 0),
+                    new Vector2(i - maxX, 1000),
+                    new Color(255, 0, 0));
             }
+            Vector2[] ground = physics.GetGround();
+            Vector2[] points = new Vector2[ground.Length];
+            for(int i = 0; i < ground.Length; i++)
+            {
+                points[i] = new Vector2(ground[i].X * PixelPerMeter - maxX,
+                    //view.GetHeight - (ground[i][1] * PixelPerMeter - maxY) };
+                    view.GetHeight - (ground[i].Y * PixelPerMeter));
+            }
+            view.ShowPolygon(points, new Color(0, 0, 0), 255);
+        }
+
+        private void OnGraphPaint(object sender, EventArgs e)
+        {
+            if(bestResults.Count > 0)
+                view.ShowGraph(bestResults, averageResults);
         }
 
         private double currentGenerationTime = 0;
         private double generationLifeTime = 20;
         private void OnStep(object sender, EventArgs e)
         {
+            if(view.IsPaused)
+                return;
             // Прибавляем время, прошедшее с прошлого шага.
-            currentGenerationTime += view.Interval * simulationSpeed;
-            Console.WriteLine(currentGenerationTime);
+            double delTime = view.Interval * simulationSpeed;
+            currentGenerationTime += delTime;
+            //Console.WriteLine(currentGenerationTime);
             if(currentGenerationTime < generationLifeTime)
             {
                 // Производим шаг симуляции физики.
@@ -371,7 +464,7 @@ namespace GeneticCarsPresenter
                 // Двигаем машинки вперед.
                 for(int i = 0; i < physics.CarsCount; i++)
                 {
-                    physics.GoForward(i);
+                    physics.GoForward(i, (float)delTime);
                 }
             }
             // Если время жизни поколения истекло.
@@ -379,20 +472,24 @@ namespace GeneticCarsPresenter
             {
                 // Получаем результаты машинок как координаты X центра корпуса.
                 double[] carResults = new double[physics.CarsCount];
+                double bestResult = -1000;
+                double averageResult = 0;
                 for(int i = 0; i < physics.CarsCount; i++)
                 {
-                    float[] result = physics.GetCarCenter(i);
-                    carResults[i] = result[0];
+                    Vector2 result = physics.GetCarCenter(i);
+                    carResults[i] = result.X;
+                    bestResult = Math.Max(bestResult, carResults[i]);
+                    averageResult += carResults[i];
                 }
+                averageResult /= carResults.Length;
+                bestResults.Add((float)bestResult);
+                averageResults.Add((float)averageResult);
                 // Кладем результаты в алгоритм.
                 algorithm.SetFitnessFunctionResults(carResults);
                 // Генерируем новое поколение.
                 algorithm.GenerateNextGeneration();
                 // Удаляем все машинки старого поколения.
-                while(physics.CarsCount > 0)
-                {
-                    physics.RemoveCar(0);
-                }
+                physics.RemoveCars();
                 // Добавляем машинки нового поколения.
                 ConvertGenesToCars();
                 currentGenerationTime = 0;
@@ -407,27 +504,96 @@ namespace GeneticCarsPresenter
 
         private void OnPopulationSizeChanged(object sender, EventArgs e)
         {
-            algorithm.PopulationSize = view.PopulationSize;
+            if(algorithm != null)
+                algorithm.PopulationSize = view.PopulationSize;
         }
 
         private void OnEliteClonesChanged(object sender, EventArgs e)
         {
-            algorithm.EliteClones = view.EliteClones;
+            if(algorithm != null)
+                algorithm.EliteClones = view.EliteClones;
         }
 
         private void OnCrossoverTypeChanged(object sender, EventArgs e)
         {
-            algorithm.SetCrossover(view.CrossoverType);
+            if(algorithm != null)
+                algorithm.SetCrossover(view.CrossoverType);
         }
 
         private void OnMutationRateChanged(object sender, EventArgs e)
         {
-            algorithm.MutationRate = (double)view.MutationRate / 100;
+            if(algorithm != null)
+                algorithm.MutationRate = (double)view.MutationRate / 100;
         }
 
         private void OnSimulationSpeedChanged(object sender, EventArgs e)
         {
             simulationSpeed = view.SimulationSpeed;
+        }
+
+        private void OnFuelPerSquareMeterSet(object sender, EventArgs e)
+        {
+            fuelPerSquareMeter = view.FuelPerSquareMeter;
+        }
+
+        private void OnSavePopulation(object sender, EventArgs e)
+        {
+            if(algorithm == null)
+            {
+                view.ShowMessage("Нет популяции для сохранения.", "");
+                return;
+            }
+            int populationSize = algorithm.PopulationSize;
+            int bytesPerIndivid = algorithm.GeneSize / 8;
+            byte[][] genes = algorithm.GetPopulationInfo();
+            try
+            {
+                view.SavePopulation(populationSize, bytesPerIndivid, genes);
+            }
+            catch
+            {
+                view.ShowMessage("Не удалось сохранить информацию о популяции.", 
+                    "Ошибка сохранения в файл.");
+            }
+        }
+
+        private void OnLoadPopulation(object sender, EventArgs e)
+        {
+            if(algorithm != null)
+            {
+                view.ShowMessage("Невозможно загрузить популяцию во время " +
+                    "симуляции. Завершите текущюю симуляцию, а затем загрузите" +
+                    "сохраненнцю популяцию.", "");
+                return;
+            }
+            int populationSize = 0, bytesPerIndivid = 0;
+            try
+            {
+                byte[][] genes = view.LoadPopulation(ref populationSize, ref bytesPerIndivid);
+                if(bytesPerIndivid != 12)
+                    throw new Exception();
+                algorithm = new GeneticAlgorithm(populationSize, bytesPerIndivid * 8,
+                    genes);
+                SetAlgorithmSettings();
+                ConvertGenesToCars();
+
+                bestResults = new List<float>();
+                averageResults = new List<float>();
+                bestResults.Add(0);
+                averageResults.Add(0);
+            }
+            catch
+            {
+                view.ShowMessage("Не удалось загрузить корректную информацию о популяции.", 
+                    "Ошибка загрузки из файла.");
+            }
+        }
+
+        private void SetAlgorithmSettings()
+        {
+            algorithm.EliteClones = view.EliteClones;
+            algorithm.SetCrossover(view.CrossoverType);
+            algorithm.MutationRate = (double)view.MutationRate / 100.0;
         }
     }
 }

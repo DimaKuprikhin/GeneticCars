@@ -13,24 +13,50 @@ using Microsoft.Xna.Framework;
 
 namespace GeneticCarsPhysicsEngine
 {
-    class Car
+    public class Car
     {
         public World CarWorld { get; private set; }
         public Body CarBody { get; set; }
         public Body FirstWheel { get; set; }
         public Body SecondWheel { get; set; }
         public float WheelAngularSpeed { get; set; }
+        public int FuelRefillCount { get; private set; } = 0;
 
-        public Car(World world, float speed)
-        {
-            this.CarWorld = world;
-            WheelAngularSpeed = speed;
+        private float fuel;
+        public readonly float MaxFuel;
+        public float Fuel {
+            get { return fuel; }
+            set
+            {
+                fuel = Math.Max(0, Math.Min(MaxFuel, value));
+            }
         }
 
-        public void GoForward()
+        public Car(World world, float speed, float fuel)
         {
-            FirstWheel.AngularVelocity = -WheelAngularSpeed;
-            SecondWheel.AngularVelocity = -WheelAngularSpeed;
+            CarWorld = world;
+            WheelAngularSpeed = speed;
+            this.fuel = MaxFuel = fuel;
+        }
+
+        public void RefillFuel()
+        {
+            Fuel = MaxFuel;
+            ++FuelRefillCount;
+        }
+
+        public void GoForward(float delTime)
+        {
+            if(fuel > 0)
+            {
+                FirstWheel.AngularVelocity = -WheelAngularSpeed;
+                SecondWheel.AngularVelocity = -WheelAngularSpeed;
+                Fuel -= WheelAngularSpeed * delTime;
+            }
+            else
+            {
+                FirstWheel.AngularVelocity = SecondWheel.AngularVelocity = 0;
+            }
         }
     }
 }

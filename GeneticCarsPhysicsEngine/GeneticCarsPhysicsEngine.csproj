@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Car.cs" />
+    <Compile Include="Color.cs" />
     <Compile Include="ObjectFactory.cs" />
     <Compile Include="ObjectInfo.cs" />
     <Compile Include="Physics.cs" />
