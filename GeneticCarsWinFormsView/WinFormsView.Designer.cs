@@ -44,7 +44,6 @@
             this.generationLifeTimeLabel = new System.Windows.Forms.Label();
             this.currentGenerationTimeLabel = new System.Windows.Forms.Label();
             this.simulationSpeedLabel = new System.Windows.Forms.Label();
-            this.simulationSpeedComboBox = new System.Windows.Forms.ComboBox();
             this.graphPictureBox = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.bestReusltEverLabel = new System.Windows.Forms.Label();
@@ -61,15 +60,19 @@
             this.hideShowButton = new System.Windows.Forms.Button();
             this.finishSimulationButton = new System.Windows.Forms.Button();
             this.fpsLabel = new System.Windows.Forms.Label();
+            this.distanceLabel = new System.Windows.Forms.Label();
+            this.populationsLabel = new System.Windows.Forms.Label();
+            this.simulationSpeedTrackBar = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.populationSizeUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.eliteClonesUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.simulationSpeedTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(800, 400);
@@ -193,22 +196,13 @@
             this.simulationSpeedLabel.AutoSize = true;
             this.simulationSpeedLabel.Location = new System.Drawing.Point(793, 335);
             this.simulationSpeedLabel.Name = "simulationSpeedLabel";
-            this.simulationSpeedLabel.Size = new System.Drawing.Size(144, 17);
+            this.simulationSpeedLabel.Size = new System.Drawing.Size(160, 17);
             this.simulationSpeedLabel.TabIndex = 16;
-            this.simulationSpeedLabel.Text = "Скорость симуляции";
-            // 
-            // simulationSpeedComboBox
-            // 
-            this.simulationSpeedComboBox.FormattingEnabled = true;
-            this.simulationSpeedComboBox.Location = new System.Drawing.Point(923, 325);
-            this.simulationSpeedComboBox.Name = "simulationSpeedComboBox";
-            this.simulationSpeedComboBox.Size = new System.Drawing.Size(60, 24);
-            this.simulationSpeedComboBox.TabIndex = 17;
-            this.simulationSpeedComboBox.SelectedIndexChanged += new System.EventHandler(this.SimulationSpeedComboBox_SelectedIndexChanged);
+            this.simulationSpeedLabel.Text = "Скорость симуляции: 1";
             // 
             // graphPictureBox
             // 
-            this.graphPictureBox.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.graphPictureBox.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.graphPictureBox.Location = new System.Drawing.Point(0, 406);
             this.graphPictureBox.Name = "graphPictureBox";
             this.graphPictureBox.Size = new System.Drawing.Size(411, 240);
@@ -346,7 +340,7 @@
             this.finishSimulationButton.Name = "finishSimulationButton";
             this.finishSimulationButton.Size = new System.Drawing.Size(179, 46);
             this.finishSimulationButton.TabIndex = 32;
-            this.finishSimulationButton.Text = "Завершить популяцию";
+            this.finishSimulationButton.Text = "Завершить симуляцию";
             this.finishSimulationButton.UseVisualStyleBackColor = true;
             this.finishSimulationButton.Click += new System.EventHandler(this.FinishSimulationButton_Click);
             // 
@@ -358,11 +352,40 @@
             this.fpsLabel.Size = new System.Drawing.Size(0, 17);
             this.fpsLabel.TabIndex = 33;
             // 
+            // distanceLabel
+            // 
+            this.distanceLabel.AutoSize = true;
+            this.distanceLabel.Location = new System.Drawing.Point(417, 524);
+            this.distanceLabel.Name = "distanceLabel";
+            this.distanceLabel.Size = new System.Drawing.Size(86, 17);
+            this.distanceLabel.TabIndex = 34;
+            this.distanceLabel.Text = "Расстояние";
+            // 
+            // populationsLabel
+            // 
+            this.populationsLabel.AutoSize = true;
+            this.populationsLabel.Location = new System.Drawing.Point(149, 627);
+            this.populationsLabel.Name = "populationsLabel";
+            this.populationsLabel.Size = new System.Drawing.Size(81, 17);
+            this.populationsLabel.TabIndex = 35;
+            this.populationsLabel.Text = "Популяции";
+            // 
+            // simulationSpeedTrackBar
+            // 
+            this.simulationSpeedTrackBar.Location = new System.Drawing.Point(904, 315);
+            this.simulationSpeedTrackBar.Name = "simulationSpeedTrackBar";
+            this.simulationSpeedTrackBar.Size = new System.Drawing.Size(104, 56);
+            this.simulationSpeedTrackBar.TabIndex = 36;
+            this.simulationSpeedTrackBar.ValueChanged += new System.EventHandler(this.SimulationSpeedTrackBar_ValueChanged);
+            // 
             // WinFormsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 653);
+            this.Controls.Add(this.simulationSpeedTrackBar);
+            this.Controls.Add(this.populationsLabel);
+            this.Controls.Add(this.distanceLabel);
             this.Controls.Add(this.fpsLabel);
             this.Controls.Add(this.finishSimulationButton);
             this.Controls.Add(this.hideShowButton);
@@ -379,7 +402,6 @@
             this.Controls.Add(this.bestReusltEverLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.graphPictureBox);
-            this.Controls.Add(this.simulationSpeedComboBox);
             this.Controls.Add(this.simulationSpeedLabel);
             this.Controls.Add(this.currentGenerationTimeLabel);
             this.Controls.Add(this.generationLifeTimeLabel);
@@ -400,6 +422,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.populationSizeUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.eliteClonesUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.simulationSpeedTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -422,7 +445,6 @@
         private System.Windows.Forms.Label generationLifeTimeLabel;
         private System.Windows.Forms.Label currentGenerationTimeLabel;
         private System.Windows.Forms.Label simulationSpeedLabel;
-        private System.Windows.Forms.ComboBox simulationSpeedComboBox;
         private System.Windows.Forms.PictureBox graphPictureBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label bestReusltEverLabel;
@@ -439,5 +461,8 @@
         private System.Windows.Forms.Button hideShowButton;
         private System.Windows.Forms.Button finishSimulationButton;
         private System.Windows.Forms.Label fpsLabel;
+        private System.Windows.Forms.Label distanceLabel;
+        private System.Windows.Forms.Label populationsLabel;
+        private System.Windows.Forms.TrackBar simulationSpeedTrackBar;
     }
 }

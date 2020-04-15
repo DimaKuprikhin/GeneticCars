@@ -26,6 +26,8 @@ namespace GeneticCarsWinFormsView
 
             this.bestReusltEverLabel.Location = new Point(420, 420);
             this.label1.Location = new Point(420, 610);
+            this.distanceLabel.Location = new Point(420, 520);
+            this.populationsLabel.Location = new Point(200, 620);
 
             this.createGroundButton.Location = new Point(820, 10);
             this.createGroundButton.Size = new Size(240, 40);
@@ -79,17 +81,15 @@ namespace GeneticCarsWinFormsView
             this.currentGenerationTimeLabel.Location = new Point(820, 295);
 
             this.simulationSpeedLabel.Location = new Point(820, 325);
-            this.simulationSpeedComboBox.Location = new Point(1020, 320);
-            this.simulationSpeedComboBox.Size = new Size(40, 40);
-            for(int i = 1; i <= 5; ++i)
-            {
-                simulationSpeedComboBox.Items.Add(i.ToString());
-            }
+            this.simulationSpeedTrackBar.Location = new Point(950, 320);
+            this.simulationSpeedTrackBar.Minimum = 1;
+            this.simulationSpeedTrackBar.Maximum = 5;
 
             this.fuelPerSquareMeterLabel.Location = new Point(820, 355);
             this.setFuelPerSquareMeterLabel.Location = new Point(820, 385);
             this.setFuelPerSquareMeterTextBox.Location = new Point(965, 380);
             this.setFuelPerSquareMeterTextBox.Size = new Size(30, 40);
+            this.setFuelPerSquareMeterTextBox.Text = "12";
             this.setFuelPerSquareMeterButton.Location = new Point(995, 379);
             this.setFuelPerSquareMeterButton.Size = new Size(65, 22);
 
@@ -149,6 +149,12 @@ namespace GeneticCarsWinFormsView
         private PaintEventArgs graphPaintE;
         public void ShowGraph(List<float> bestResults, List<float> averageResults)
         {
+            for(int i = 0; i < 5; ++i)
+                graphPaintE.Graphics.DrawLine(
+                    new Pen(new SolidBrush(System.Drawing.Color.FromArgb(64, 0, 0, 0))),
+                    0, graphPictureBox.Height * i / 4,
+                    graphPictureBox.Width, graphPictureBox.Height * i / 4);
+
             float bestResultEver = bestResults[0];
             for(int i = 1; i < bestResults.Count; ++i)
                 bestResultEver = Math.Max(bestResultEver, bestResults[i]);
@@ -319,13 +325,14 @@ namespace GeneticCarsWinFormsView
 
         public float SimulationSpeed
         {
-            get { return float.Parse((string)simulationSpeedComboBox.SelectedItem); }
+            get { return simulationSpeedTrackBar.Value; }
         }
         public event EventHandler<EventArgs> simulationSpeedChanged;
-        private void SimulationSpeedComboBox_SelectedIndexChanged(object sender,
-            EventArgs e)
+
+        private void SimulationSpeedTrackBar_ValueChanged(object sender, EventArgs e)
         {
             simulationSpeedChanged(this, EventArgs.Empty);
+            simulationSpeedLabel.Text = $"Скорость симуляции: {simulationSpeedTrackBar.Value}";
         }
 
         public float FuelPerSquareMeter { get; private set; }
