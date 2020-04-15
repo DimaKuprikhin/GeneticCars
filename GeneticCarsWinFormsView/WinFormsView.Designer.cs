@@ -60,6 +60,7 @@
             this.createGroundButton = new System.Windows.Forms.Button();
             this.hideShowButton = new System.Windows.Forms.Button();
             this.finishSimulationButton = new System.Windows.Forms.Button();
+            this.fpsLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.populationSizeUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.eliteClonesUpDown)).BeginInit();
@@ -78,7 +79,7 @@
             // 
             // timer1
             // 
-            this.timer1.Interval = 40;
+            this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
             // startButton
@@ -87,7 +88,7 @@
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(180, 40);
             this.startButton.TabIndex = 1;
-            this.startButton.Text = "Create new population";
+            this.startButton.Text = "Создать популяцию";
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.StartButton_Click);
             // 
@@ -96,24 +97,24 @@
             this.populationSizeLabel.AutoSize = true;
             this.populationSizeLabel.Location = new System.Drawing.Point(806, 111);
             this.populationSizeLabel.Name = "populationSizeLabel";
-            this.populationSizeLabel.Size = new System.Drawing.Size(104, 17);
+            this.populationSizeLabel.Size = new System.Drawing.Size(132, 17);
             this.populationSizeLabel.TabIndex = 3;
-            this.populationSizeLabel.Text = "Population size";
+            this.populationSizeLabel.Text = "Размер популяции";
             // 
             // eliteClonesLabel
             // 
             this.eliteClonesLabel.AutoSize = true;
             this.eliteClonesLabel.Location = new System.Drawing.Point(806, 143);
             this.eliteClonesLabel.Name = "eliteClonesLabel";
-            this.eliteClonesLabel.Size = new System.Drawing.Size(80, 17);
+            this.eliteClonesLabel.Size = new System.Drawing.Size(111, 17);
             this.eliteClonesLabel.TabIndex = 4;
-            this.eliteClonesLabel.Text = "Elite clones";
+            this.eliteClonesLabel.Text = "Элитные клоны";
             // 
             // populationSizeUpDown
             // 
-            this.populationSizeUpDown.Location = new System.Drawing.Point(920, 106);
+            this.populationSizeUpDown.Location = new System.Drawing.Point(936, 109);
             this.populationSizeUpDown.Name = "populationSizeUpDown";
-            this.populationSizeUpDown.Size = new System.Drawing.Size(53, 22);
+            this.populationSizeUpDown.Size = new System.Drawing.Size(44, 22);
             this.populationSizeUpDown.TabIndex = 6;
             this.populationSizeUpDown.ValueChanged += new System.EventHandler(this.PopulationSizeUpDown_ValueChanged);
             // 
@@ -130,9 +131,9 @@
             this.crossoverTypeLabel.AutoSize = true;
             this.crossoverTypeLabel.Location = new System.Drawing.Point(802, 176);
             this.crossoverTypeLabel.Name = "crossoverTypeLabel";
-            this.crossoverTypeLabel.Size = new System.Drawing.Size(103, 17);
+            this.crossoverTypeLabel.Size = new System.Drawing.Size(125, 17);
             this.crossoverTypeLabel.TabIndex = 8;
-            this.crossoverTypeLabel.Text = "Crossover type";
+            this.crossoverTypeLabel.Text = "Тип скрещивания";
             // 
             // crossoverTypeComboBox
             // 
@@ -148,16 +149,16 @@
             this.mutationRateLabel.AutoSize = true;
             this.mutationRateLabel.Location = new System.Drawing.Point(802, 199);
             this.mutationRateLabel.Name = "mutationRateLabel";
-            this.mutationRateLabel.Size = new System.Drawing.Size(91, 17);
+            this.mutationRateLabel.Size = new System.Drawing.Size(152, 17);
             this.mutationRateLabel.TabIndex = 11;
-            this.mutationRateLabel.Text = "Mutation rate";
+            this.mutationRateLabel.Text = "Вероятность мутации";
             // 
             // mutationRateComboBox
             // 
             this.mutationRateComboBox.FormattingEnabled = true;
-            this.mutationRateComboBox.Location = new System.Drawing.Point(903, 196);
+            this.mutationRateComboBox.Location = new System.Drawing.Point(936, 196);
             this.mutationRateComboBox.Name = "mutationRateComboBox";
-            this.mutationRateComboBox.Size = new System.Drawing.Size(70, 24);
+            this.mutationRateComboBox.Size = new System.Drawing.Size(50, 24);
             this.mutationRateComboBox.TabIndex = 12;
             this.mutationRateComboBox.SelectedIndexChanged += new System.EventHandler(this.MutationRateComboBox_SelectedIndexChanged);
             // 
@@ -174,27 +175,27 @@
             this.generationLifeTimeLabel.AutoSize = true;
             this.generationLifeTimeLabel.Location = new System.Drawing.Point(802, 232);
             this.generationLifeTimeLabel.Name = "generationLifeTimeLabel";
-            this.generationLifeTimeLabel.Size = new System.Drawing.Size(181, 17);
+            this.generationLifeTimeLabel.Size = new System.Drawing.Size(219, 17);
             this.generationLifeTimeLabel.TabIndex = 14;
-            this.generationLifeTimeLabel.Text = "Generation life time: 20 sec";
+            this.generationLifeTimeLabel.Text = "Время жизни популяции: 20 сек";
             // 
             // currentGenerationTimeLabel
             // 
             this.currentGenerationTimeLabel.AutoSize = true;
             this.currentGenerationTimeLabel.Location = new System.Drawing.Point(794, 295);
             this.currentGenerationTimeLabel.Name = "currentGenerationTimeLabel";
-            this.currentGenerationTimeLabel.Size = new System.Drawing.Size(185, 17);
+            this.currentGenerationTimeLabel.Size = new System.Drawing.Size(213, 17);
             this.currentGenerationTimeLabel.TabIndex = 15;
-            this.currentGenerationTimeLabel.Text = "Current generation time: 0.0";
+            this.currentGenerationTimeLabel.Text = "Текущее время популяции: 0.0";
             // 
             // simulationSpeedLabel
             // 
             this.simulationSpeedLabel.AutoSize = true;
             this.simulationSpeedLabel.Location = new System.Drawing.Point(793, 335);
             this.simulationSpeedLabel.Name = "simulationSpeedLabel";
-            this.simulationSpeedLabel.Size = new System.Drawing.Size(116, 17);
+            this.simulationSpeedLabel.Size = new System.Drawing.Size(144, 17);
             this.simulationSpeedLabel.TabIndex = 16;
-            this.simulationSpeedLabel.Text = "Simulation speed";
+            this.simulationSpeedLabel.Text = "Скорость симуляции";
             // 
             // simulationSpeedComboBox
             // 
@@ -220,35 +221,36 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(417, 629);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 17);
+            this.label1.Size = new System.Drawing.Size(67, 17);
             this.label1.TabIndex = 19;
-            this.label1.Text = "0 meters";
+            this.label1.Text = "0 метров";
             // 
             // bestReusltEverLabel
             // 
             this.bestReusltEverLabel.AutoSize = true;
             this.bestReusltEverLabel.Location = new System.Drawing.Point(417, 406);
             this.bestReusltEverLabel.Name = "bestReusltEverLabel";
-            this.bestReusltEverLabel.Size = new System.Drawing.Size(63, 17);
+            this.bestReusltEverLabel.Size = new System.Drawing.Size(67, 17);
             this.bestReusltEverLabel.TabIndex = 20;
-            this.bestReusltEverLabel.Text = "0 meters";
+            this.bestReusltEverLabel.Text = "0 метров";
             // 
             // setLifeTimeLabel
             // 
             this.setLifeTimeLabel.AutoSize = true;
             this.setLifeTimeLabel.Location = new System.Drawing.Point(793, 266);
             this.setLifeTimeLabel.Name = "setLifeTimeLabel";
-            this.setLifeTimeLabel.Size = new System.Drawing.Size(81, 17);
+            this.setLifeTimeLabel.Size = new System.Drawing.Size(172, 17);
             this.setLifeTimeLabel.TabIndex = 21;
-            this.setLifeTimeLabel.Text = "Set life time";
+            this.setLifeTimeLabel.Text = "Установить время жизни";
             // 
             // setLifeTimeButton
             // 
-            this.setLifeTimeButton.Location = new System.Drawing.Point(903, 263);
+            this.setLifeTimeButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.setLifeTimeButton.Location = new System.Drawing.Point(904, 266);
             this.setLifeTimeButton.Name = "setLifeTimeButton";
             this.setLifeTimeButton.Size = new System.Drawing.Size(82, 28);
             this.setLifeTimeButton.TabIndex = 22;
-            this.setLifeTimeButton.Text = "Set";
+            this.setLifeTimeButton.Text = "Установить";
             this.setLifeTimeButton.UseVisualStyleBackColor = true;
             this.setLifeTimeButton.Click += new System.EventHandler(this.SetLifeTimeButton_Click);
             // 
@@ -257,18 +259,18 @@
             this.fuelPerSquareMeterLabel.AutoSize = true;
             this.fuelPerSquareMeterLabel.Location = new System.Drawing.Point(798, 352);
             this.fuelPerSquareMeterLabel.Name = "fuelPerSquareMeterLabel";
-            this.fuelPerSquareMeterLabel.Size = new System.Drawing.Size(172, 17);
+            this.fuelPerSquareMeterLabel.Size = new System.Drawing.Size(143, 17);
             this.fuelPerSquareMeterLabel.TabIndex = 23;
-            this.fuelPerSquareMeterLabel.Text = "Fuel per square meter: 12";
+            this.fuelPerSquareMeterLabel.Text = "Топлива на кв. м: 12";
             // 
             // setFuelPerSquareMeterLabel
             // 
             this.setFuelPerSquareMeterLabel.AutoSize = true;
             this.setFuelPerSquareMeterLabel.Location = new System.Drawing.Point(778, 373);
             this.setFuelPerSquareMeterLabel.Name = "setFuelPerSquareMeterLabel";
-            this.setFuelPerSquareMeterLabel.Size = new System.Drawing.Size(119, 17);
+            this.setFuelPerSquareMeterLabel.Size = new System.Drawing.Size(189, 17);
             this.setFuelPerSquareMeterLabel.TabIndex = 24;
-            this.setFuelPerSquareMeterLabel.Text = "Set fuel per sq.m.";
+            this.setFuelPerSquareMeterLabel.Text = "Установить кол-во топлива";
             // 
             // setFuelPerSquareMeterTextBox
             // 
@@ -279,11 +281,12 @@
             // 
             // setFuelPerSquareMeterButton
             // 
+            this.setFuelPerSquareMeterButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.setFuelPerSquareMeterButton.Location = new System.Drawing.Point(949, 372);
             this.setFuelPerSquareMeterButton.Name = "setFuelPerSquareMeterButton";
             this.setFuelPerSquareMeterButton.Size = new System.Drawing.Size(34, 23);
             this.setFuelPerSquareMeterButton.TabIndex = 26;
-            this.setFuelPerSquareMeterButton.Text = "Set";
+            this.setFuelPerSquareMeterButton.Text = "Установить";
             this.setFuelPerSquareMeterButton.UseVisualStyleBackColor = true;
             this.setFuelPerSquareMeterButton.Click += new System.EventHandler(this.SetFuelPerSquareMeterButton_Click);
             // 
@@ -293,7 +296,7 @@
             this.populationSaveButton.Name = "populationSaveButton";
             this.populationSaveButton.Size = new System.Drawing.Size(179, 47);
             this.populationSaveButton.TabIndex = 27;
-            this.populationSaveButton.Text = "Save population";
+            this.populationSaveButton.Text = "Сохранить популяцию";
             this.populationSaveButton.UseVisualStyleBackColor = true;
             this.populationSaveButton.Click += new System.EventHandler(this.PopulationSaveButton_Click);
             // 
@@ -303,7 +306,7 @@
             this.populationLoadButton.Name = "populationLoadButton";
             this.populationLoadButton.Size = new System.Drawing.Size(183, 44);
             this.populationLoadButton.TabIndex = 28;
-            this.populationLoadButton.Text = "Load population";
+            this.populationLoadButton.Text = "Загрузить популяцию";
             this.populationLoadButton.UseVisualStyleBackColor = true;
             this.populationLoadButton.Click += new System.EventHandler(this.PopulationLoadButton_Click);
             // 
@@ -313,7 +316,7 @@
             this.pauseButton.Name = "pauseButton";
             this.pauseButton.Size = new System.Drawing.Size(178, 40);
             this.pauseButton.TabIndex = 29;
-            this.pauseButton.Text = "Pause";
+            this.pauseButton.Text = "Пауза";
             this.pauseButton.UseVisualStyleBackColor = true;
             this.pauseButton.Click += new System.EventHandler(this.PauseButton_Click);
             // 
@@ -323,7 +326,7 @@
             this.createGroundButton.Name = "createGroundButton";
             this.createGroundButton.Size = new System.Drawing.Size(177, 40);
             this.createGroundButton.TabIndex = 30;
-            this.createGroundButton.Text = "Create ground";
+            this.createGroundButton.Text = "Создать поверхность";
             this.createGroundButton.UseVisualStyleBackColor = true;
             this.createGroundButton.Click += new System.EventHandler(this.CreateGroundButton_Click);
             // 
@@ -333,7 +336,7 @@
             this.hideShowButton.Name = "hideShowButton";
             this.hideShowButton.Size = new System.Drawing.Size(179, 39);
             this.hideShowButton.TabIndex = 31;
-            this.hideShowButton.Text = "Hide/Show";
+            this.hideShowButton.Text = "Скрыть/Показать";
             this.hideShowButton.UseVisualStyleBackColor = true;
             this.hideShowButton.Click += new System.EventHandler(this.HideShowButton_Click);
             // 
@@ -343,15 +346,24 @@
             this.finishSimulationButton.Name = "finishSimulationButton";
             this.finishSimulationButton.Size = new System.Drawing.Size(179, 46);
             this.finishSimulationButton.TabIndex = 32;
-            this.finishSimulationButton.Text = "Finish simulation";
+            this.finishSimulationButton.Text = "Завершить популяцию";
             this.finishSimulationButton.UseVisualStyleBackColor = true;
             this.finishSimulationButton.Click += new System.EventHandler(this.FinishSimulationButton_Click);
+            // 
+            // fpsLabel
+            // 
+            this.fpsLabel.AutoSize = true;
+            this.fpsLabel.Location = new System.Drawing.Point(12, 12);
+            this.fpsLabel.Name = "fpsLabel";
+            this.fpsLabel.Size = new System.Drawing.Size(0, 17);
+            this.fpsLabel.TabIndex = 33;
             // 
             // WinFormsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 653);
+            this.Controls.Add(this.fpsLabel);
             this.Controls.Add(this.finishSimulationButton);
             this.Controls.Add(this.hideShowButton);
             this.Controls.Add(this.createGroundButton);
@@ -426,5 +438,6 @@
         private System.Windows.Forms.Button createGroundButton;
         private System.Windows.Forms.Button hideShowButton;
         private System.Windows.Forms.Button finishSimulationButton;
+        private System.Windows.Forms.Label fpsLabel;
     }
 }

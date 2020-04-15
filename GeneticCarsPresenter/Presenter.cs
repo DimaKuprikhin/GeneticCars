@@ -55,7 +55,6 @@ namespace GeneticCarsPresenter
                 new EventHandler<EventArgs>(OnSavePopulation);
             view.populatioinLoadButtonClick +=
                 new EventHandler<EventArgs>(OnLoadPopulation);
-            //algorithm = new GeneticAlgorithm(view.PopulationSize, 96);
             OnCreateGround(this, EventArgs.Empty);
         }
 
@@ -275,13 +274,14 @@ namespace GeneticCarsPresenter
             }
             // Задаем гравитацию и землю.
             physics = new Physics(0, -30.0f);
-            SetRandomGround((float)Math.PI / 5, 20, -80, 20, 30000, 5, 45);
+            AddRandomGround((float)Math.PI / 5, 20, -80, 20, 500, 5, 45);
         }
 
         private void OnFinishSimulation(object sender, EventArgs e)
         {
             algorithm = null;
             physics.RemoveCars();
+            view.SetCurrentGenerationTime(0);
         }
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace GeneticCarsPresenter
         /// <param name="lowerBound"> Минимально значение координта Y для вершины. </param>
         /// <param name="upperBound"> Максимальное значение координта Y для вершины. 
         /// </param>
-        private void SetRandomGround(float maxAngle, float 
+        private void AddRandomGround(float maxAngle, float 
             maxEdgeLength, float beginX, float beginY, float endX, 
             float lowerBound, float upperBound)
         {
@@ -307,22 +307,16 @@ namespace GeneticCarsPresenter
             {
                 float angle = ((float)rnd.NextDouble() * 2.0f - 1.0f) * maxAngle;
                 float edgeLength = (float)Math.Max(rnd.NextDouble(), 0.01) * 
-                    Math.Max(maxEdgeLength, 0.1f);
+                    maxEdgeLength;
                 // Проеверяем, не выходит ли новое ребро за пределы.
                 if(groundPoints[groundPoints.Count - 1].Y +
                     edgeLength * (float)Math.Sin(angle) > upperBound)
                 {
-                    //edgeLength *= 
-                    //(upperBound - groundPoints[groundPoints.Count - 1][1]) /
-                    //    (edgeLength * (float)Math.Sin(angle));
                     angle *= (-1);
                 }
                 if(groundPoints[groundPoints.Count - 1].Y +
                    edgeLength * (float)Math.Sin(angle) < lowerBound)
                 {
-                    //edgeLength *=
-                    //    (groundPoints[groundPoints.Count - 1][1] - lowerBound) /
-                    //    (edgeLength * (float)Math.Sin(angle));
                     angle *= (-1);
                 }
 
@@ -337,7 +331,7 @@ namespace GeneticCarsPresenter
             {
                 ground[i] = new Vector2(groundPoints[i].X, groundPoints[i].Y);
             }
-            physics.SetGround(ground, -10);
+            physics.AddGroundVertices(ground);
         }
 
         private void OnPaint(object sender, EventArgs e)
@@ -349,7 +343,7 @@ namespace GeneticCarsPresenter
             // все остальное относительно нее.
             float maxX = 20;
             float maxY = 0;
-            for(int i = 0; i < physics.CarsCount; i++)
+            for(int i = 0; i < physics.Cars.Count; i++)
             {
                 Vector2 center = physics.GetCarCenter(i);
                 if(physics.Cars[i].FuelRefillCount < (int)center.X / 500)
@@ -362,6 +356,14 @@ namespace GeneticCarsPresenter
                     maxY = center.Y;
                 }
             }
+
+            if(physics.groundVertices[physics.groundVertices.Count - 1].X - maxX < 500.0f)
+            {
+                AddRandomGround((float)Math.PI / 5, 20, physics.lowerRightVertex.X,
+                    physics.groundVertices[physics.groundVertices.Count - 1].Y,
+                    physics.lowerRightVertex.X + 500, 5, 45);
+            }
+
             Console.WriteLine($"{maxX}");
             // Переводим в координаты формы.
             maxX = maxX * PixelPerMeter - view.GetWidth / 2;
@@ -369,7 +371,7 @@ namespace GeneticCarsPresenter
 
             float[] fuels = physics.GetCarFuels();
 
-            for(int i = 0; i < physics.CarsCount; i++)
+            for(int i = 0; i < physics.Cars.Count; i++)
             {
                 // Получаем цвета машинки.
                 Color[] colors = physics.GetCarColors(i);
@@ -425,14 +427,17 @@ namespace GeneticCarsPresenter
                     new Vector2(i - maxX, 1000),
                     new Color(255, 0, 0));
             }
-            Vector2[] ground = physics.GetGround();
-            Vector2[] points = new Vector2[ground.Length];
-            for(int i = 0; i < ground.Length; i++)
+            Vector2[] points = new Vector2[physics.groundVertices.Count + 2];
+            points[0] = new Vector2(physics.lowerLeftVertex.X * PixelPerMeter - maxX, 
+                view.GetHeight - physics.lowerLeftVertex.Y * PixelPerMeter);
+            for(int i = 1; i <= physics.groundVertices.Count; ++i)
             {
-                points[i] = new Vector2(ground[i].X * PixelPerMeter - maxX,
-                    //view.GetHeight - (ground[i][1] * PixelPerMeter - maxY) };
-                    view.GetHeight - (ground[i].Y * PixelPerMeter));
+                points[i] = new Vector2(physics.groundVertices[i - 1].X * PixelPerMeter - maxX,
+                    view.GetHeight - (physics.groundVertices[i - 1].Y * PixelPerMeter));
             }
+            points[points.Length - 1] =
+                new Vector2(physics.lowerRightVertex.X * PixelPerMeter - maxX,
+                view.GetHeight - physics.lowerRightVertex.Y * PixelPerMeter);
             view.ShowPolygon(points, new Color(0, 0, 0), 255);
         }
 
@@ -462,7 +467,7 @@ namespace GeneticCarsPresenter
                     physics.Step(time / iterations);
                 }
                 // Двигаем машинки вперед.
-                for(int i = 0; i < physics.CarsCount; i++)
+                for(int i = 0; i < physics.Cars.Count; i++)
                 {
                     physics.GoForward(i, (float)delTime);
                 }
@@ -471,10 +476,10 @@ namespace GeneticCarsPresenter
             else
             {
                 // Получаем результаты машинок как координаты X центра корпуса.
-                double[] carResults = new double[physics.CarsCount];
+                double[] carResults = new double[physics.Cars.Count];
                 double bestResult = -1000;
                 double averageResult = 0;
-                for(int i = 0; i < physics.CarsCount; i++)
+                for(int i = 0; i < physics.Cars.Count; i++)
                 {
                     Vector2 result = physics.GetCarCenter(i);
                     carResults[i] = result.X;

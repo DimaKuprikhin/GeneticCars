@@ -24,13 +24,14 @@ namespace GeneticCarsPhysicsEngine
         /// Массив объектов, составляющих "землю" и координаты вершин поверхности.
         /// </summary>
         private List<Body> ground = new List<Body>();
-        private Vector2[] groundVertices;
+        public List<Vector2> groundVertices { get; private set; } = new List<Vector2>();
+        public Vector2 lowerLeftVertex { get; } = new Vector2(-80, -2);
+        public Vector2 lowerRightVertex { get; private set; }
 
         /// <summary>
         /// Массив машинок.
         /// </summary>
         public List<Car> Cars { get; private set; }
-        public int CarsCount { get { return Cars == null ? 0 : Cars.Count; } }
 
         /// <summary>
         /// Стартовая координата машинок.
@@ -49,31 +50,30 @@ namespace GeneticCarsPhysicsEngine
         /// <param name="vertices"> Массив координат вершин поверхности
         /// в порядке возрастания координаты X. </param>
         /// <param name="lowBound"> Координата нижней границы земли. </param>
-        public void SetGround(Vector2[] vertices, float lowBound)
+        public void AddGroundVertices(Vector2[] vertices)
         {
-            // Делаем массив с длиной на 2 больше для вершин, 
-            // описывающих нижнюю грань земли.
-            groundVertices = new Vector2[vertices.Length + 2];
-            groundVertices[0] = new Vector2(vertices[0].X, lowBound);
-            groundVertices[1] = new Vector2(vertices[0].X, vertices[0].Y);
             // Разбиваем полигон земли на четырехугольники, 
             // т.к. нужны выпуклые многоугольники.
-            for(int i = 1; i < vertices.GetLength(0); i++)
+            for(int i = 1; i < vertices.Length; i++)
             {
-                groundVertices[i + 1] = new Vector2(vertices[i].X, vertices[i].Y);
+                groundVertices.Add(vertices[i]);
                 Vector2[] v = new Vector2[4]{
-                    new Vector2(vertices[i - 1].X, lowBound),
-                    new Vector2(vertices[i - 1].X, vertices[i - 1].Y),
-                    new Vector2(vertices[i].X, vertices[i].Y),
-                    new Vector2(vertices[i].X, lowBound) };
-
-                Vertices vert = new Vertices(v);
-                ground.Add(ObjectFactory.AddPolygon(world, vert, new Vector2(0, 0),
+                    new Vector2(vertices[i - 1].X, lowerLeftVertex.Y),
+                    vertices[i - 1],
+                    vertices[i],
+                    new Vector2(vertices[i].X, lowerLeftVertex.Y) };
+                ground.Add(ObjectFactory.AddPolygon(world, new Vertices(v), new Vector2(0, 0),
                     true));
                 ground[i - 1].CollisionCategories = (Category)(1);
             }
-            groundVertices[groundVertices.GetLength(0) - 1] =
-                new Vector2(vertices[vertices.Length - 1].X, lowBound);
+            lowerRightVertex = new Vector2(groundVertices[groundVertices.Count - 1].X,
+                lowerLeftVertex.Y);
+        }
+
+        public void SetNewGround()
+        {
+            ground = new List<Body>();
+            groundVertices = new List<Vector2>();
         }
 
         /// <summary>
@@ -129,14 +129,6 @@ namespace GeneticCarsPhysicsEngine
             Cars[index].GoForward(delTime);
         }
 
-        /// <summary>
-        /// Получение вершин поверхности земли.
-        /// </summary>
-        /// <returns> Возвращает массив координта вершин земли. </returns>
-        public Vector2[] GetGround()
-        {
-            return groundVertices;
-        }
 
         /// <summary>
         /// Получение цвета машинки.

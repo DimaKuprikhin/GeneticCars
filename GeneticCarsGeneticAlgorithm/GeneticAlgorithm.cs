@@ -124,7 +124,7 @@ namespace GeneticCarsGeneticAlgorithm
             {
                 population[i] = children[i];
             }
-            for(int i = 0; i < PopulationSize; i++)
+            for(int i = 0; i < PopulationSize - EliteClones; i++)
             {
                 Mutator.Mutate(population[i], MutationRate);
             }

@@ -18,7 +18,7 @@ namespace GeneticCarsWinFormsView
         public WinFormsView()
         {
             InitializeComponent();
-            this.Size = new Size(1000, 700);
+            this.Size = new Size(1100, 700);
             this.pictureBox1.Size = new Size(800, 400);
 
             this.graphPictureBox.Size = new Size(400, 200);
@@ -27,36 +27,36 @@ namespace GeneticCarsWinFormsView
             this.bestReusltEverLabel.Location = new Point(420, 420);
             this.label1.Location = new Point(420, 610);
 
-            this.createGroundButton.Location = new Point(800, 10);
-            this.createGroundButton.Size = new Size(180, 40);
+            this.createGroundButton.Location = new Point(820, 10);
+            this.createGroundButton.Size = new Size(240, 40);
 
-            this.startButton.Location = new Point(800, 60);
-            this.startButton.Size = new Size(180, 40);
+            this.startButton.Location = new Point(820, 60);
+            this.startButton.Size = new Size(240, 40);
 
-            this.populationSizeLabel.Location = new Point(800, 115);
-            this.populationSizeUpDown.Location = new Point(920, 110);
+            this.populationSizeLabel.Location = new Point(820, 115);
+            this.populationSizeUpDown.Location = new Point(1000, 110);
             this.populationSizeUpDown.Size = new Size(60, 40);
             this.populationSizeUpDown.Minimum = 2;
-            this.populationSizeUpDown.Maximum = 50;
-            this.populationSizeUpDown.Value = 50;
+            this.populationSizeUpDown.Maximum = 200;
+            this.populationSizeUpDown.Value = 30;
 
-            this.eliteClonesLabel.Location = new Point(800, 145);
-            this.eliteClonesUpDown.Location = new Point(920, 140);
+            this.eliteClonesLabel.Location = new Point(820, 145);
+            this.eliteClonesUpDown.Location = new Point(1000, 140);
             this.eliteClonesUpDown.Size = new Size(60, 40);
             this.eliteClonesUpDown.Minimum = 0;
             this.eliteClonesUpDown.Maximum = 10;
 
-            this.crossoverTypeLabel.Location = new Point(800, 175);
-            this.crossoverTypeComboBox.Location = new Point(880, 170);
+            this.crossoverTypeLabel.Location = new Point(820, 175);
+            this.crossoverTypeComboBox.Location = new Point(960, 170);
             this.crossoverTypeComboBox.Size = new Size(100, 40);
-            this.crossoverTypeComboBox.Items.Add("Single-point");
-            this.crossoverTypeComboBox.Items.Add("Two-point");
-            this.crossoverTypeComboBox.Items.Add("Three-point");
-            this.crossoverTypeComboBox.Items.Add("Uniform");
+            this.crossoverTypeComboBox.Items.Add("Одноточечное");
+            this.crossoverTypeComboBox.Items.Add("Двухточечное");
+            this.crossoverTypeComboBox.Items.Add("Трехточечное");
+            this.crossoverTypeComboBox.Items.Add("Погенное");
             this.crossoverTypeComboBox.SelectedIndex = 0;
 
-            this.mutationRateLabel.Location = new Point(800, 205);
-            this.mutationRateComboBox.Location = new Point(880, 200);
+            this.mutationRateLabel.Location = new Point(820, 205);
+            this.mutationRateComboBox.Location = new Point(960, 200);
             this.mutationRateComboBox.Size = new Size(100, 40);
             this.mutationRateComboBox.Items.Add("0%");
             this.mutationRateComboBox.Items.Add("1%");
@@ -68,45 +68,45 @@ namespace GeneticCarsWinFormsView
             this.mutationRateComboBox.Items.Add("100%");
             this.mutationRateComboBox.SelectedIndex = 1;
 
-            this.generationLifeTimeLabel.Location = new Point(800, 235);
-            this.setLifeTimeLabel.Location = new Point(800, 265);
-            this.generationLifeTimeTextBox.Location = new Point(870, 260);
-            this.setLifeTimeButton.Location = new Point(930, 260);
-            this.setLifeTimeButton.Size = new Size(40, 20);
-            this.generationLifeTimeTextBox.Size = new Size(50, 40);
+            this.generationLifeTimeLabel.Location = new Point(820, 235);
+            this.setLifeTimeLabel.Location = new Point(820, 265);
+            this.generationLifeTimeTextBox.Location = new Point(960, 260);
+            this.setLifeTimeButton.Location = new Point(990, 259);
+            this.setLifeTimeButton.Size = new Size(70, 22);
+            this.generationLifeTimeTextBox.Size = new Size(30, 40);
             this.generationLifeTimeTextBox.Text = "20";
 
-            this.currentGenerationTimeLabel.Location = new Point(800, 295);
+            this.currentGenerationTimeLabel.Location = new Point(820, 295);
 
-            this.simulationSpeedLabel.Location = new Point(800, 325);
-            this.simulationSpeedComboBox.Location = new Point(900, 320);
-            for(int i = 0; i < 5; i++)
+            this.simulationSpeedLabel.Location = new Point(820, 325);
+            this.simulationSpeedComboBox.Location = new Point(1020, 320);
+            this.simulationSpeedComboBox.Size = new Size(40, 40);
+            for(int i = 1; i <= 5; ++i)
             {
-                simulationSpeedComboBox.Items.Add((1.0 + (double)i / 4).ToString());
+                simulationSpeedComboBox.Items.Add(i.ToString());
             }
-            simulationSpeedComboBox.Items.Add("5");
 
-            this.fuelPerSquareMeterLabel.Location = new Point(800, 355);
-            this.setFuelPerSquareMeterLabel.Location = new Point(800, 385);
-            this.setFuelPerSquareMeterTextBox.Location = new Point(890, 380);
-            this.setFuelPerSquareMeterTextBox.Size = new Size(40, 40);
-            this.setFuelPerSquareMeterButton.Location = new Point(930, 380);
-            this.setFuelPerSquareMeterButton.Size = new Size(40, 20);
+            this.fuelPerSquareMeterLabel.Location = new Point(820, 355);
+            this.setFuelPerSquareMeterLabel.Location = new Point(820, 385);
+            this.setFuelPerSquareMeterTextBox.Location = new Point(965, 380);
+            this.setFuelPerSquareMeterTextBox.Size = new Size(30, 40);
+            this.setFuelPerSquareMeterButton.Location = new Point(995, 379);
+            this.setFuelPerSquareMeterButton.Size = new Size(65, 22);
 
-            this.hideShowButton.Location = new Point(600, 420);
-            this.hideShowButton.Size = new Size(180, 40);
+            this.hideShowButton.Location = new Point(820, 420);
+            this.hideShowButton.Size = new Size(240, 40);
 
-            this.pauseButton.Location = new Point(800, 420);
-            this.pauseButton.Size = new Size(180, 40);
+            this.pauseButton.Location = new Point(820, 460);
+            this.pauseButton.Size = new Size(240, 40);
 
-            this.populationSaveButton.Location = new Point(600, 470);
-            this.populationSaveButton.Size = new Size(180, 40);
+            this.populationSaveButton.Location = new Point(820, 500);
+            this.populationSaveButton.Size = new Size(240, 40);
 
-            this.populationLoadButton.Location = new Point(800, 470);
-            this.populationLoadButton.Size = new Size(180, 40);
+            this.populationLoadButton.Location = new Point(820, 540);
+            this.populationLoadButton.Size = new Size(240, 40);
 
-            this.finishSimulationButton.Location = new Point(600, 520);
-            this.finishSimulationButton.Size = new Size(180, 40);
+            this.finishSimulationButton.Location = new Point(820, 580);
+            this.finishSimulationButton.Size = new Size(240, 40);
         }
 
         public int GetWidth { get { return this.pictureBox1.Width; } }
@@ -126,7 +126,7 @@ namespace GeneticCarsWinFormsView
         public void ShowPolygon(Vector2[] vertices, GeneticCarsPhysicsEngine.Color color,
             int alpha)
         {
-            Point[] points = new Point[vertices.GetLength(0)];
+            Point[] points = new Point[vertices.Length];
             for(int i = 0; i < points.Length; i++) {
                 points[i] = new Point((int)vertices[i].X, (int)vertices[i].Y);
             }
@@ -152,7 +152,7 @@ namespace GeneticCarsWinFormsView
             float bestResultEver = bestResults[0];
             for(int i = 1; i < bestResults.Count; ++i)
                 bestResultEver = Math.Max(bestResultEver, bestResults[i]);
-            bestReusltEverLabel.Text = $"{(int)bestResultEver} meters";
+            bestReusltEverLabel.Text = $"{(int)bestResultEver} метров";
             float count = bestResults.Count - 1;
             for(int i = 1; i < bestResults.Count; ++i)
             {
@@ -200,9 +200,12 @@ namespace GeneticCarsWinFormsView
 
         public float Interval { get; private set; }
         public event EventHandler<EventArgs> step;
+        private DateTime lastDateTime = DateTime.Now;
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            Interval = (float)timer1.Interval / 1000.0f;
+            Interval = (float)(DateTime.Now - lastDateTime).TotalSeconds;
+            lastDateTime = DateTime.Now;
+            fpsLabel.Text = $"{(1 / Interval):F2}";
             step(this, EventArgs.Empty);
             Refresh();
         }
@@ -255,13 +258,13 @@ namespace GeneticCarsWinFormsView
                 string item = (string)crossoverTypeComboBox.SelectedItem;
                 switch(item)
                 {
-                    case "Single-point":
+                    case "Одноточечное":
                         return 1;
-                    case "Two-point":
+                    case "Двухточечное":
                         return 2;
-                    case "Three-point":
+                    case "Трехточечное":
                         return 3;
-                    case "Uniform":
+                    case "Погенное":
                         return 4;
                     default:
                         return 1;
@@ -303,7 +306,7 @@ namespace GeneticCarsWinFormsView
             }
             else
             {
-                generationLifeTimeLabel.Text = $"Generation life time: {newValue:F2} sec";
+                generationLifeTimeLabel.Text = $"Время жизни популяции: {newValue:F2} сек";
                 GenerationLifeTime = newValue;
                 generationLifeTimeChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -311,7 +314,7 @@ namespace GeneticCarsWinFormsView
 
         public void SetCurrentGenerationTime(double value)
         {
-            this.currentGenerationTimeLabel.Text = $"Current generation time: {value:F2}";
+            this.currentGenerationTimeLabel.Text = $"Текущее время популяции: {value:F2}";
         }
 
         public float SimulationSpeed
@@ -337,7 +340,7 @@ namespace GeneticCarsWinFormsView
             }
             else
             {
-                fuelPerSquareMeterLabel.Text = $"Fuel per square meter: {newValue:F2}";
+                fuelPerSquareMeterLabel.Text = $"Топлива на кв. м: {newValue:F2}";
                 FuelPerSquareMeter = newValue;
                 fuelPerSquareMeterSet?.Invoke(this, EventArgs.Empty);
             }
