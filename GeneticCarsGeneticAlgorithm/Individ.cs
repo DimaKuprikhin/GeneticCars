@@ -8,10 +8,19 @@ namespace GeneticCarsGeneticAlgorithm
 {
     class Individ : IComparable<Individ>
     {
+        /// <summary>
+        /// Гены особи.
+        /// </summary>
         public readonly byte[] Genes;
 
+        /// <summary>
+        /// Длина генотипа особи.
+        /// </summary>
         public readonly int GeneSize;
 
+        /// <summary>
+        /// Значение функции приспособленности.
+        /// </summary>
         public double FitnessValue { get; set; }
 
         public Individ(int geneSize, byte[] genes = null)
@@ -34,7 +43,7 @@ namespace GeneticCarsGeneticAlgorithm
         }
 
         /// <summary>
-        /// Устанавливает гену значение 1.
+        /// Устанавливает гену значение value.
         /// </summary>
         /// <param name="index"> Номер гена. </param>
         /// <param name="value"> Значние гена 0 или 1. </param>
@@ -42,10 +51,18 @@ namespace GeneticCarsGeneticAlgorithm
         {
             if(GetGene(index) != value)
             {
-                Genes[index / 8] = (byte)(Genes[index / 8] ^ (1 << (index % 8)));
+                Genes[index / 8] ^= (byte)(1 << (index % 8));
             }
         }
 
+        /// <summary>
+        /// Функция сравнения двух особей на основе значения их функций 
+        /// приспособленности.
+        /// </summary>
+        /// <param name="other"> Особь, с которой сравниваем. </param>
+        /// <returns> Возвращает 1, если значение функции приспособленности 
+        /// другой особи меньше; 0, если они равны; -1, если у другой особи
+        /// она больше. </returns>
         public int CompareTo(Individ other)
         {
             if(this.FitnessValue == other.FitnessValue)

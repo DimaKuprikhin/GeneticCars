@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FarseerPhysics.Collision.Shapes;
+﻿using System.Collections.Generic;
 using FarseerPhysics.Common;
-using FarseerPhysics.Controllers;
 using FarseerPhysics.Dynamics;
-using FarseerPhysics.Dynamics.Joints;
-using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 
 namespace GeneticCarsPhysicsEngine
@@ -21,11 +13,20 @@ namespace GeneticCarsPhysicsEngine
         private readonly World world;
 
         /// <summary>
-        /// Массив объектов, составляющих "землю" и координаты вершин поверхности.
+        /// Массив объектов, составляющих поверхность.
         /// </summary>
         private List<Body> ground = new List<Body>();
+        /// <summary>
+        /// Массив координат вершин поверхности.
+        /// </summary>
         public List<Vector2> groundVertices { get; private set; } = new List<Vector2>();
+        /// <summary>
+        /// Координата левого нижней вершины поверхности.
+        /// </summary>
         public Vector2 lowerLeftVertex { get; } = new Vector2(-80, -2);
+        /// <summary>
+        /// Координата правой нижней вершины поверхности.
+        /// </summary>
         public Vector2 lowerRightVertex { get; private set; }
 
         /// <summary>
@@ -38,6 +39,13 @@ namespace GeneticCarsPhysicsEngine
         /// </summary>
         private readonly Vector2 carStartPosition = new Vector2(20, 50);
 
+        /// <summary>
+        /// Конструктор, принимающий значение гравитации.
+        /// </summary>
+        /// <param name="xGravity"> Значение проекции вектора гравитации 
+        /// на ось Х. </param>
+        /// <param name="yGravity"> Значение проекции вектора гравитации
+        /// на ось Y. </param>
         public Physics(float xGravity, float yGravity)
         {
             world = new World(new Vector2(xGravity, yGravity));
@@ -70,6 +78,9 @@ namespace GeneticCarsPhysicsEngine
                 lowerLeftVertex.Y);
         }
 
+        /// <summary>
+        /// Удаляет информацию о поверхности.
+        /// </summary>
         public void SetNewGround()
         {
             ground = new List<Body>();
@@ -109,6 +120,9 @@ namespace GeneticCarsPhysicsEngine
                 collisionCategory));
         }
 
+        /// <summary>
+        /// Удаляет все машинки.
+        /// </summary>
         public void RemoveCars()
         {
             while(Cars.Count > 0)
@@ -131,7 +145,7 @@ namespace GeneticCarsPhysicsEngine
 
 
         /// <summary>
-        /// Получение цвета машинки.
+        /// Возвращает массив цветов машинок.
         /// </summary>
         /// <param name="index"> Индекс машинки. </param>
         /// <returns> Цвет корпуса и цвета двух колес в формате RGB. </returns>
@@ -144,6 +158,10 @@ namespace GeneticCarsPhysicsEngine
             return result;
         }
 
+        /// <summary>
+        /// Возвращает массив заполненостей баков машинок.
+        /// </summary>
+        /// <returns></returns>
         public float[] GetCarFuels()
         {
             float[] result = new float[Cars.Count];

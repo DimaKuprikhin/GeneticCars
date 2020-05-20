@@ -43,7 +43,6 @@
             this.generationLifeTimeTextBox = new System.Windows.Forms.TextBox();
             this.generationLifeTimeLabel = new System.Windows.Forms.Label();
             this.currentGenerationTimeLabel = new System.Windows.Forms.Label();
-            this.simulationSpeedLabel = new System.Windows.Forms.Label();
             this.graphPictureBox = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.bestReusltEverLabel = new System.Windows.Forms.Label();
@@ -62,12 +61,13 @@
             this.fpsLabel = new System.Windows.Forms.Label();
             this.distanceLabel = new System.Windows.Forms.Label();
             this.populationsLabel = new System.Windows.Forms.Label();
-            this.simulationSpeedTrackBar = new System.Windows.Forms.TrackBar();
+            this.totalSimulationTimeLabel = new System.Windows.Forms.Label();
+            this.pauseMessageLabel = new System.Windows.Forms.Label();
+            this.showInfoButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.populationSizeUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.eliteClonesUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.simulationSpeedTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -171,16 +171,15 @@
             this.generationLifeTimeTextBox.Name = "generationLifeTimeTextBox";
             this.generationLifeTimeTextBox.Size = new System.Drawing.Size(30, 22);
             this.generationLifeTimeTextBox.TabIndex = 13;
-            this.generationLifeTimeTextBox.TextChanged += new System.EventHandler(this.GenerationLifeTimeTextBox_TextChanged);
             // 
             // generationLifeTimeLabel
             // 
             this.generationLifeTimeLabel.AutoSize = true;
             this.generationLifeTimeLabel.Location = new System.Drawing.Point(802, 232);
             this.generationLifeTimeLabel.Name = "generationLifeTimeLabel";
-            this.generationLifeTimeLabel.Size = new System.Drawing.Size(219, 17);
+            this.generationLifeTimeLabel.Size = new System.Drawing.Size(239, 17);
             this.generationLifeTimeLabel.TabIndex = 14;
-            this.generationLifeTimeLabel.Text = "Время жизни популяции: 20 сек";
+            this.generationLifeTimeLabel.Text = "Время жизни популяции: 20.00 сек";
             // 
             // currentGenerationTimeLabel
             // 
@@ -190,15 +189,6 @@
             this.currentGenerationTimeLabel.Size = new System.Drawing.Size(213, 17);
             this.currentGenerationTimeLabel.TabIndex = 15;
             this.currentGenerationTimeLabel.Text = "Текущее время популяции: 0.0";
-            // 
-            // simulationSpeedLabel
-            // 
-            this.simulationSpeedLabel.AutoSize = true;
-            this.simulationSpeedLabel.Location = new System.Drawing.Point(793, 335);
-            this.simulationSpeedLabel.Name = "simulationSpeedLabel";
-            this.simulationSpeedLabel.Size = new System.Drawing.Size(160, 17);
-            this.simulationSpeedLabel.TabIndex = 16;
-            this.simulationSpeedLabel.Text = "Скорость симуляции: 1";
             // 
             // graphPictureBox
             // 
@@ -370,20 +360,42 @@
             this.populationsLabel.TabIndex = 35;
             this.populationsLabel.Text = "Популяции";
             // 
-            // simulationSpeedTrackBar
+            // totalSimulationTimeLabel
             // 
-            this.simulationSpeedTrackBar.Location = new System.Drawing.Point(904, 315);
-            this.simulationSpeedTrackBar.Name = "simulationSpeedTrackBar";
-            this.simulationSpeedTrackBar.Size = new System.Drawing.Size(104, 56);
-            this.simulationSpeedTrackBar.TabIndex = 36;
-            this.simulationSpeedTrackBar.ValueChanged += new System.EventHandler(this.SimulationSpeedTrackBar_ValueChanged);
+            this.totalSimulationTimeLabel.AutoSize = true;
+            this.totalSimulationTimeLabel.Location = new System.Drawing.Point(810, 240);
+            this.totalSimulationTimeLabel.Name = "totalSimulationTimeLabel";
+            this.totalSimulationTimeLabel.Size = new System.Drawing.Size(235, 17);
+            this.totalSimulationTimeLabel.TabIndex = 37;
+            this.totalSimulationTimeLabel.Text = "Общее время симуляции: 0.00 сек";
+            // 
+            // pauseMessageLabel
+            // 
+            this.pauseMessageLabel.AutoSize = true;
+            this.pauseMessageLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.pauseMessageLabel.Location = new System.Drawing.Point(351, 180);
+            this.pauseMessageLabel.Name = "pauseMessageLabel";
+            this.pauseMessageLabel.Size = new System.Drawing.Size(0, 31);
+            this.pauseMessageLabel.TabIndex = 38;
+            // 
+            // showInfoButton
+            // 
+            this.showInfoButton.Location = new System.Drawing.Point(467, 423);
+            this.showInfoButton.Name = "showInfoButton";
+            this.showInfoButton.Size = new System.Drawing.Size(140, 43);
+            this.showInfoButton.TabIndex = 39;
+            this.showInfoButton.Text = "Показать справку";
+            this.showInfoButton.UseVisualStyleBackColor = true;
+            this.showInfoButton.Click += new System.EventHandler(this.ShowInfoButton_Click);
             // 
             // WinFormsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 653);
-            this.Controls.Add(this.simulationSpeedTrackBar);
+            this.Controls.Add(this.showInfoButton);
+            this.Controls.Add(this.pauseMessageLabel);
+            this.Controls.Add(this.totalSimulationTimeLabel);
             this.Controls.Add(this.populationsLabel);
             this.Controls.Add(this.distanceLabel);
             this.Controls.Add(this.fpsLabel);
@@ -402,7 +414,6 @@
             this.Controls.Add(this.bestReusltEverLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.graphPictureBox);
-            this.Controls.Add(this.simulationSpeedLabel);
             this.Controls.Add(this.currentGenerationTimeLabel);
             this.Controls.Add(this.generationLifeTimeLabel);
             this.Controls.Add(this.generationLifeTimeTextBox);
@@ -422,7 +433,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.populationSizeUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.eliteClonesUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.simulationSpeedTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -444,7 +454,6 @@
         private System.Windows.Forms.TextBox generationLifeTimeTextBox;
         private System.Windows.Forms.Label generationLifeTimeLabel;
         private System.Windows.Forms.Label currentGenerationTimeLabel;
-        private System.Windows.Forms.Label simulationSpeedLabel;
         private System.Windows.Forms.PictureBox graphPictureBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label bestReusltEverLabel;
@@ -463,6 +472,8 @@
         private System.Windows.Forms.Label fpsLabel;
         private System.Windows.Forms.Label distanceLabel;
         private System.Windows.Forms.Label populationsLabel;
-        private System.Windows.Forms.TrackBar simulationSpeedTrackBar;
+        private System.Windows.Forms.Label totalSimulationTimeLabel;
+        private System.Windows.Forms.Label pauseMessageLabel;
+        private System.Windows.Forms.Button showInfoButton;
     }
 }

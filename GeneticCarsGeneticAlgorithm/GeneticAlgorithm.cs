@@ -8,16 +8,34 @@ namespace GeneticCarsGeneticAlgorithm
 {
     public class GeneticAlgorithm
     {
+        /// <summary>
+        /// Генератор случайных чисел.
+        /// </summary>
         private Random rnd = new Random();
-
+        
+        /// <summary>
+        /// Массив особей.
+        /// </summary>
         private List<Individ> population = new List<Individ>();
 
+        /// <summary>
+        /// Тип скрещивания.
+        /// </summary>
         private Crossovers.ICrossover Crossover;
 
+        /// <summary>
+        /// Тип отбора.
+        /// </summary>
         private Selectors.ISelector Selector;
 
+        /// <summary>
+        /// Тип мутации.
+        /// </summary>
         private Mutators.IMutator Mutator;
 
+        /// <summary>
+        /// Свойство, возвращающее размер популяции.
+        /// </summary>
         public int PopulationSize
         {
             get { return population.Count; }
@@ -31,17 +49,32 @@ namespace GeneticCarsGeneticAlgorithm
             }
         }
 
+        /// <summary>
+        /// Количество генов особи.
+        /// </summary>
         public readonly int GeneSize;
 
+        /// <summary>
+        /// Номер поколения.
+        /// </summary>
         public int GenerationCount { get; private set; }
 
         /// <summary>
-        /// Количество особей
+        /// Количество элитных особей.
         /// </summary>
         public int EliteClones { get; set; }
 
+        /// <summary>
+        /// Вероятность мутации.
+        /// </summary>
         public double MutationRate { get; set; }
 
+        /// <summary>
+        /// Конструктор генетического алгоритма.
+        /// </summary>
+        /// <param name="populationSize"> Размер популяции. </param>
+        /// <param name="geneSize"> Длина генотипа. </param>
+        /// <param name="genes"> Массив массивов генов особей. </param>
         public GeneticAlgorithm(int populationSize, int geneSize, byte[][] genes = null)
         {
             GeneSize = geneSize;

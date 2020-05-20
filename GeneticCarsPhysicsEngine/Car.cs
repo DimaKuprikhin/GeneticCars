@@ -15,15 +15,47 @@ namespace GeneticCarsPhysicsEngine
 {
     public class Car
     {
+        /// <summary>
+        /// Мир, в который добавлена машинка.
+        /// </summary>
         public World CarWorld { get; private set; }
+
+        /// <summary>
+        /// Корпус машинки.
+        /// </summary>
         public Body CarBody { get; set; }
+        
+        /// <summary>
+        /// Первое колесо.
+        /// </summary>
         public Body FirstWheel { get; set; }
+
+        /// <summary>
+        /// Второе колесо.
+        /// </summary>
         public Body SecondWheel { get; set; }
+
+        /// <summary>
+        /// Угловая скорость колес.
+        /// </summary>
         public float WheelAngularSpeed { get; set; }
+
+        /// <summary>
+        /// Количество пополнений топлива.
+        /// </summary>
         public int FuelRefillCount { get; private set; } = 0;
 
+        /// <summary>
+        /// Текущее количество топлива.
+        /// </summary>
         private float fuel;
+        /// <summary>
+        /// Максимальное количество топлива.
+        /// </summary>
         public readonly float MaxFuel;
+        /// <summary>
+        /// Свойство доступа к количеству топлива.
+        /// </summary>
         public float Fuel {
             get { return fuel; }
             set
@@ -32,6 +64,12 @@ namespace GeneticCarsPhysicsEngine
             }
         }
 
+        /// <summary>
+        /// конструктор машинки.
+        /// </summary>
+        /// <param name="world"> Мир физическая симуляция. </param>
+        /// <param name="speed"> Угловая скорость колес. </param>
+        /// <param name="fuel"> Максимальное количество топлива. </param>
         public Car(World world, float speed, float fuel)
         {
             CarWorld = world;
@@ -39,12 +77,20 @@ namespace GeneticCarsPhysicsEngine
             this.fuel = MaxFuel = fuel;
         }
 
+        /// <summary>
+        /// пополняет топливо.
+        /// </summary>
         public void RefillFuel()
         {
             Fuel = MaxFuel;
             ++FuelRefillCount;
         }
 
+        /// <summary>
+        /// Вращает колеса.
+        /// </summary>
+        /// <param name="delTime"> Количество времени, прошедшее с прошлого 
+        /// шага симуляции. </param>
         public void GoForward(float delTime)
         {
             if(fuel > 0)

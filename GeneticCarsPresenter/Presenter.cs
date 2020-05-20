@@ -10,24 +10,45 @@ namespace GeneticCarsPresenter
 {
     public class Presenter
     {
+        /// <summary>
+        /// Объект класса физической симуляции.
+        /// </summary>
         private Physics physics;
 
+        /// <summary>
+        /// Объект класса генетического алгоритма.
+        /// </summary>
         private GeneticAlgorithm algorithm;
 
+        /// <summary>
+        /// Объект интерфейса, реализующего отображение данных и передающего
+        /// события от пользователя.
+        /// </summary>
         private IWinFormsView view;
 
+        /// <summary>
+        /// Константа, переводящее единицы измерения расстояния в физической
+        /// симуляции в расстояние для отображения.
+        /// </summary>
         private const float PixelPerMeter = 7.0f;
 
-        private float simulationSpeed = 1.0f;
-
         /// <summary> Массив лучших результатов поколений. </summary>
-        private List<float> bestResults = new List<float>();
+        private List<int> bestResults = new List<int>();
 
-        /// <summary> Массив средних резьльтатов поколений. </summary>
-        private List<float> averageResults = new List<float>();
+        /// <summary> Массив средних результатов поколений. </summary>
+        private List<int> averageResults = new List<int>();
 
+        /// <summary>
+        /// Значение количество топлива машинки на квадратный метр корпуса.
+        /// </summary>
         private float fuelPerSquareMeter = 12;
 
+        /// <summary>
+        /// Конструктор, принимающий объект интерфейса IWinFormsView и 
+        /// подписывающий на все его ивенты.
+        /// </summary>
+        /// <param name="view"> Объект интерфейса для отображение данных и 
+        /// получения информации о действиях пользователя. </param>
         public Presenter(IWinFormsView view)
         {
             this.view = view;
@@ -47,8 +68,6 @@ namespace GeneticCarsPresenter
                 new EventHandler<EventArgs>(OnMutationRateChanged);
             view.generationLifeTimeChanged +=
                 new EventHandler<EventArgs>(OnGenerationLifeTimeChanged);
-            view.simulationSpeedChanged += 
-                new EventHandler<EventArgs>(OnSimulationSpeedChanged);
             view.fuelPerSquareMeterSet +=
                 new EventHandler<EventArgs>(OnFuelPerSquareMeterSet);
             view.populatioinSaveButtonClick +=
@@ -58,12 +77,19 @@ namespace GeneticCarsPresenter
             OnCreateGround(this, EventArgs.Empty);
         }
 
+        /// <summary> Минимальный размер корпуса машинки. </summary>
         private const float minCarSize = 6.0f;
+        /// <summary> Максимальный размер корпуса машинки. </summary>
         private const float maxCarSize = 10.0f;
+        /// <summary> Количество вершин корпуса машинки. </summary>
         private const int vertexNumber = 6;
+        /// <summary> Минимальный размер колеса машинки. </summary>
         private const float minWheelRadius = 1.0f;
+        /// <summary> Максимальный размер колеса машинки. </summary>
         private const float maxWheelRadius = 2.0f;
+        /// <summary> Минимальная скорость машинки. </summary>
         private const float minCarSpeed = 10.0f;
+        /// <summary> Максимальная скорость машинки. </summary>
         private const float maxCarSpeed = 50.0f;
         /// <summary>
         /// Переводит гены особи в ее физический образ.
@@ -217,11 +243,11 @@ namespace GeneticCarsPresenter
         /// <summary>
         /// Вычисляет точку пересечения двух прямых.
         /// </summary>
-        /// <param name="a"> Две координаты первой точки первой прямой. </param>
-        /// <param name="b"> Две координаты второй точки первой прямой. </param>
-        /// <param name="c"> Две координаты первой точки второй прямой. </param>
-        /// <param name="d"> Две координаты второй точки второй прямой. </param>
-        /// <returns> Возвращает массив из 2 чисел - координат точки пересечения.
+        /// <param name="a"> Координаты первой точки первой прямой. </param>
+        /// <param name="b"> Координаты второй точки первой прямой. </param>
+        /// <param name="c"> Координаты первой точки второй прямой. </param>
+        /// <param name="d"> Координаты второй точки второй прямой. </param>
+        /// <returns> Возвращает координаты точки пересечения.
         /// </returns>
         private Vector2 GetIntersectionPoint(Vector2 a, Vector2 b, 
             Vector2 c, Vector2 d)
@@ -242,6 +268,11 @@ namespace GeneticCarsPresenter
             return new Vector2(xInter, yInter);
         }
 
+        /// <summary>
+        /// Обработка события создания популяции.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnCreatePopulation(object sender, EventArgs e)
         {
             if(algorithm != null)
@@ -256,12 +287,17 @@ namespace GeneticCarsPresenter
             // Переводим гены в машинки.
             ConvertGenesToCars();
 
-            bestResults = new List<float>();
-            averageResults = new List<float>();
+            bestResults = new List<int>();
+            averageResults = new List<int>();
             bestResults.Add(0);
             averageResults.Add(0);
         }
 
+        /// <summary>
+        /// Обработка события создания поверхности.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnCreateGround(object sender, EventArgs e)
         {
             if(algorithm != null)
@@ -277,15 +313,23 @@ namespace GeneticCarsPresenter
             AddRandomGround((float)Math.PI / 5, 20, -80, 20, 500, 5, 45);
         }
 
+        /// <summary>
+        /// Обработка события завершения симуляции.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnFinishSimulation(object sender, EventArgs e)
         {
             algorithm = null;
             physics.RemoveCars();
+            currentGenerationTime = 0;
+            totalSimulationTime = 0;
             view.SetCurrentGenerationTime(0);
+            view.SetTotalSimulationTime(0);
         }
 
         /// <summary>
-        /// Создает случайную поверхность для земли.
+        /// Генерирует дополнительное количество поверхности.
         /// </summary>
         /// <param name="maxAngle"> Максимальный угол нового ребра относительно 
         /// горизонта. </param>
@@ -334,10 +378,22 @@ namespace GeneticCarsPresenter
             physics.AddGroundVertices(ground);
         }
 
+        /// <summary>
+        /// Обработка события отрисовки нового кадра.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnPaint(object sender, EventArgs e)
         {
             if(view.IsHide)
+            {
+                if(view.IsPaused)
+                    view.ShowPauseMessage("Симуляция приостоновлена");
+                else
+                    view.ShowPauseMessage("Процесс симуляции идет");
                 return;
+            }
+            view.ShowPauseMessage("");
 
             // Найдем машинку с максимальной координатой X, чтобы отрисовывать
             // все остальное относительно нее.
@@ -438,30 +494,45 @@ namespace GeneticCarsPresenter
             points[points.Length - 1] =
                 new Vector2(physics.lowerRightVertex.X * PixelPerMeter - maxX,
                 view.GetHeight - physics.lowerRightVertex.Y * PixelPerMeter);
-            view.ShowPolygon(points, new Color(0, 0, 0), 255);
+            view.ShowGround(points, (int)Math.Round(maxX));
         }
 
+        /// <summary>
+        /// Обработка события отрисовки графика.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnGraphPaint(object sender, EventArgs e)
         {
             if(bestResults.Count > 0)
                 view.ShowGraph(bestResults, averageResults);
         }
 
-        private double currentGenerationTime = 0;
-        private double generationLifeTime = 20;
+        /// <summary> Общее время симуляции текущей популяции. </summary>
+        private double totalSimulationTime = 0.0f;
+        /// <summary> Текущее время жизни поколения. </summary>
+        private double currentGenerationTime = 0.0f;
+        /// <summary> Время жизни поколения. </summary>
+        private double generationLifeTime = 20.0f;
+        /// <summary>
+        /// Обработка события симуляции физики.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnStep(object sender, EventArgs e)
         {
             if(view.IsPaused)
                 return;
             // Прибавляем время, прошедшее с прошлого шага.
-            double delTime = view.Interval * simulationSpeed;
+            double delTime = view.Interval;
             currentGenerationTime += delTime;
+            totalSimulationTime += delTime;
             //Console.WriteLine(currentGenerationTime);
             if(currentGenerationTime < generationLifeTime)
             {
                 // Производим шаг симуляции физики.
-                int iterations = (int)simulationSpeed + 1;
-                float time = view.Interval * simulationSpeed;
+                int iterations = 3;
+                float time = view.Interval;
                 for(int i = 0; i < iterations; i++)
                 {
                     physics.Step(time / iterations);
@@ -487,8 +558,8 @@ namespace GeneticCarsPresenter
                     averageResult += carResults[i];
                 }
                 averageResult /= carResults.Length;
-                bestResults.Add((float)bestResult);
-                averageResults.Add((float)averageResult);
+                bestResults.Add((int)bestResult);
+                averageResults.Add((int)averageResult);
                 // Кладем результаты в алгоритм.
                 algorithm.SetFitnessFunctionResults(carResults);
                 // Генерируем новое поколение.
@@ -500,47 +571,78 @@ namespace GeneticCarsPresenter
                 currentGenerationTime = 0;
             }
             view.SetCurrentGenerationTime(currentGenerationTime);
+            view.SetTotalSimulationTime(totalSimulationTime);
         }
 
+        /// <summary>
+        /// Обработка события изменения времени жизни поколения.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnGenerationLifeTimeChanged(object sender, EventArgs e)
         {
             generationLifeTime = view.GenerationLifeTime;
         }
 
+        /// <summary>
+        /// Обработка события изменения размера популяции.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnPopulationSizeChanged(object sender, EventArgs e)
         {
             if(algorithm != null)
                 algorithm.PopulationSize = view.PopulationSize;
         }
 
+        /// <summary>
+        /// Обработка события изменения количества элитных особей.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnEliteClonesChanged(object sender, EventArgs e)
         {
             if(algorithm != null)
                 algorithm.EliteClones = view.EliteClones;
         }
 
+        /// <summary>
+        /// Обработка события изменения типа скрещивания.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnCrossoverTypeChanged(object sender, EventArgs e)
         {
             if(algorithm != null)
                 algorithm.SetCrossover(view.CrossoverType);
         }
 
+        /// <summary>
+        /// Обработка события изменения вероятности мутации.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnMutationRateChanged(object sender, EventArgs e)
         {
             if(algorithm != null)
                 algorithm.MutationRate = (double)view.MutationRate / 100;
         }
 
-        private void OnSimulationSpeedChanged(object sender, EventArgs e)
-        {
-            simulationSpeed = view.SimulationSpeed;
-        }
-
+        /// <summary>
+        /// Обработка события изменения количества топлива на квадратный метр.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnFuelPerSquareMeterSet(object sender, EventArgs e)
         {
             fuelPerSquareMeter = view.FuelPerSquareMeter;
         }
 
+        /// <summary>
+        /// Обработка события сохранения популяции.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnSavePopulation(object sender, EventArgs e)
         {
             if(algorithm == null)
@@ -553,7 +655,8 @@ namespace GeneticCarsPresenter
             byte[][] genes = algorithm.GetPopulationInfo();
             try
             {
-                view.SavePopulation(populationSize, bytesPerIndivid, genes);
+                view.SavePopulation(populationSize, bytesPerIndivid, genes, 
+                    averageResults, bestResults, totalSimulationTime);
             }
             catch
             {
@@ -562,6 +665,11 @@ namespace GeneticCarsPresenter
             }
         }
 
+        /// <summary>
+        /// Обработка события загрузки популяции.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnLoadPopulation(object sender, EventArgs e)
         {
             if(algorithm != null)
@@ -574,26 +682,28 @@ namespace GeneticCarsPresenter
             int populationSize = 0, bytesPerIndivid = 0;
             try
             {
-                byte[][] genes = view.LoadPopulation(ref populationSize, ref bytesPerIndivid);
+                averageResults = new List<int>();
+                bestResults = new List<int>();
+                byte[][] genes = view.LoadPopulation(ref populationSize, ref bytesPerIndivid,
+                    ref averageResults, ref bestResults, ref totalSimulationTime);
                 if(bytesPerIndivid != 12)
                     throw new Exception();
                 algorithm = new GeneticAlgorithm(populationSize, bytesPerIndivid * 8,
                     genes);
                 SetAlgorithmSettings();
                 ConvertGenesToCars();
-
-                bestResults = new List<float>();
-                averageResults = new List<float>();
-                bestResults.Add(0);
-                averageResults.Add(0);
             }
-            catch
+            catch(Exception)
             {
                 view.ShowMessage("Не удалось загрузить корректную информацию о популяции.", 
                     "Ошибка загрузки из файла.");
+                throw;
             }
         }
 
+        /// <summary>
+        /// Устанавливает параметры генетического алгоритма.
+        /// </summary>
         private void SetAlgorithmSettings()
         {
             algorithm.EliteClones = view.EliteClones;

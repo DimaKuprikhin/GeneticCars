@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
-using FarseerPhysics.Controllers;
 using FarseerPhysics.Dynamics;
-using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 
@@ -15,11 +8,25 @@ namespace GeneticCarsPhysicsEngine
 {
     static class ObjectFactory
     {
+        /// <summary>
+        /// Значение упругости объектов.
+        /// </summary>
         private const float standartRestitution = 0.4f;
+        /// <summary>
+        /// Значение коэффициента трения объектов.
+        /// </summary>
         private const float standartFriction = 0.4f;
 
+        /// <summary>
+        /// Генератор случайных чисел.
+        /// </summary>
         private static Random rnd = new Random();
 
+        /// <summary>
+        /// Создает объект случайного цвета.
+        /// </summary>
+        /// <returns> Возвращает объект цвета со случайными значениями каналов.
+        /// </returns>
         private static Color RandomColor()
         {
             return new Color( rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256));
