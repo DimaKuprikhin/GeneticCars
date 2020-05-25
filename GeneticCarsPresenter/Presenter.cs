@@ -104,140 +104,144 @@ namespace GeneticCarsPresenter
         /// </summary>
         private void ConvertGenesToCars()
         {
-            byte[][] genes = algorithm.GetPopulationInfo();
-
-            for(int i = 0; i < genes.GetLength(0); i++)
+            try
             {
-                // Размер машинки.
-                float carSize = minCarSize + (maxCarSize - minCarSize) *
-                    ((float)genes[i][0] / 256.0f);
-                // Значения углов вершин.
-                List<float> angles = new List<float>(vertexNumber);
-                for(int j = 0; j < vertexNumber; j++)
+                byte[][] genes = algorithm.GetPopulationInfo();
+
+                for(int i = 0; i < genes.GetLength(0); i++)
                 {
-                    angles.Add(2.0f * (float)Math.PI * ((float)genes[i][j + 1] / 256.0f));
-                }
-                angles.Sort();
-
-                // Радиусы колес.
-                float firstWheelRadius = minWheelRadius +
-                    (maxWheelRadius - minWheelRadius) * ((float)genes[i][7] / 256.0f);
-                float secondWheelRadius = minWheelRadius +
-                    (maxWheelRadius - minWheelRadius) * ((float)genes[i][8] / 256.0f);
-
-                // Значения углов колес.
-                float firstWheelAngle = 2.0f * (float)Math.PI *
-                    ((float)genes[i][9] / 256.0f);
-                float secondWheelAngle = 2.0f * (float)Math.PI *
-                    ((float)genes[i][10] / 256.0f);
-
-                // Скорость машинки.
-                float speed = minCarSpeed + (maxCarSpeed - minCarSpeed) *
-                    ((float)genes[i][11] / 256.0f);
-
-                // Вычисляем координаты вершин.
-                Vector2[] vertices = new Vector2[vertexNumber];
-                for(int j = 0; j < vertexNumber; j++)
-                {
-                    vertices[j] = new Vector2(carSize * (float)Math.Cos(angles[j]),
-                        carSize * (float)Math.Sin(angles[j]));
-                }
-
-                // Вычисляем координаты колес.
-                Vector2 firstWheelPosition = new Vector2(
-                    carSize * (float)Math.Cos(firstWheelAngle),
-                    carSize * (float)Math.Sin(firstWheelAngle));
-                Vector2 secondWheelPosition = new Vector2(
-                    carSize * (float)Math.Cos(secondWheelAngle),
-                    carSize * (float)Math.Sin(secondWheelAngle));
-
-                // Передвигаем центры колес на ребра корпуса машинки.
-                Vector2 firstWheelPositionOnCar = new Vector2();
-                Vector2 secondWheelPositionOnCar = new Vector2();
-                // Определяем, между какими соседними углами вершин корпуса
-                // находятся колеса.
-                for(int j = 1; j <= angles.Count; j++)
-                {
-                    float firstAngle = angles[j - 1];
-                    float secondAngle = angles[j % angles.Count];
-                    float circle = (float)Math.PI * 2;
-                    // Если первый угол - угол с максимальным значением,
-                    // а второй угол - угол с минимальным значением,
-                    // то прибавляем ко второму углу период.
-                    if(secondAngle < firstAngle)
-                        secondAngle += circle;
-                    // Если угол колеса лежит между соседними углами вершин.
-                    if((firstAngle <= firstWheelAngle &&
-                        firstWheelAngle <= secondAngle) ||
-                        (firstAngle - circle <= firstWheelAngle &&
-                        firstWheelAngle <= secondAngle - circle))
+                    // Размер машинки.
+                    float carSize = minCarSize + (maxCarSize - minCarSize) *
+                        ((float)genes[i][0] / 256.0f);
+                    // Значения углов вершин.
+                    List<float> angles = new List<float>(vertexNumber);
+                    for(int j = 0; j < vertexNumber; j++)
                     {
-                        // Вычисляем позицию колеса на корпусе как точку 
-                        // пересечения прямой, включающей центр машинки и 
-                        // координату колеса, и прямой, включающей соседние вершины.
-                        firstWheelPositionOnCar =
-                            GetIntersectionPoint(
-                                new Vector2(0, 0), firstWheelPosition,
-                                vertices[j - 1], vertices[j % angles.Count]);
-                        // Если пересечение прямых за пределами машинки.
-                        if(Math.Pow(firstWheelPositionOnCar.X, 2) +
-                            Math.Pow(firstWheelPositionOnCar.Y, 2) >=
-                            Math.Pow(carSize, 2))
+                        angles.Add(2.0f * (float)Math.PI * ((float)genes[i][j + 1] / 256.0f));
+                    }
+                    angles.Sort();
+
+                    // Радиусы колес.
+                    float firstWheelRadius = minWheelRadius +
+                        (maxWheelRadius - minWheelRadius) * ((float)genes[i][7] / 256.0f);
+                    float secondWheelRadius = minWheelRadius +
+                        (maxWheelRadius - minWheelRadius) * ((float)genes[i][8] / 256.0f);
+
+                    // Значения углов колес.
+                    float firstWheelAngle = 2.0f * (float)Math.PI *
+                        ((float)genes[i][9] / 256.0f);
+                    float secondWheelAngle = 2.0f * (float)Math.PI *
+                        ((float)genes[i][10] / 256.0f);
+
+                    // Скорость машинки.
+                    float speed = minCarSpeed + (maxCarSpeed - minCarSpeed) *
+                        ((float)genes[i][11] / 256.0f);
+
+                    // Вычисляем координаты вершин.
+                    Vector2[] vertices = new Vector2[vertexNumber];
+                    for(int j = 0; j < vertexNumber; j++)
+                    {
+                        vertices[j] = new Vector2(carSize * (float)Math.Cos(angles[j]),
+                            carSize * (float)Math.Sin(angles[j]));
+                    }
+
+                    // Вычисляем координаты колес.
+                    Vector2 firstWheelPosition = new Vector2(
+                        carSize * (float)Math.Cos(firstWheelAngle),
+                        carSize * (float)Math.Sin(firstWheelAngle));
+                    Vector2 secondWheelPosition = new Vector2(
+                        carSize * (float)Math.Cos(secondWheelAngle),
+                        carSize * (float)Math.Sin(secondWheelAngle));
+
+                    // Передвигаем центры колес на ребра корпуса машинки.
+                    Vector2 firstWheelPositionOnCar = new Vector2();
+                    Vector2 secondWheelPositionOnCar = new Vector2();
+                    // Определяем, между какими соседними углами вершин корпуса
+                    // находятся колеса.
+                    for(int j = 1; j <= angles.Count; j++)
+                    {
+                        float firstAngle = angles[j - 1];
+                        float secondAngle = angles[j % angles.Count];
+                        float circle = (float)Math.PI * 2;
+                        // Если первый угол - угол с максимальным значением,
+                        // а второй угол - угол с минимальным значением,
+                        // то прибавляем ко второму углу период.
+                        if(secondAngle < firstAngle)
+                            secondAngle += circle;
+                        // Если угол колеса лежит между соседними углами вершин.
+                        if((firstAngle <= firstWheelAngle &&
+                            firstWheelAngle <= secondAngle) ||
+                            (firstAngle - circle <= firstWheelAngle &&
+                            firstWheelAngle <= secondAngle - circle))
                         {
-                            // Перемещаем колесо к ближайшей по углу вершине.
-                            if(Math.Abs(firstWheelAngle - firstAngle) <
-                                Math.Abs(firstWheelAngle - secondAngle))
+                            // Вычисляем позицию колеса на корпусе как точку 
+                            // пересечения прямой, включающей центр машинки и 
+                            // координату колеса, и прямой, включающей соседние вершины.
+                            firstWheelPositionOnCar =
+                                GetIntersectionPoint(
+                                    new Vector2(0, 0), firstWheelPosition,
+                                    vertices[j - 1], vertices[j % angles.Count]);
+                            // Если пересечение прямых за пределами машинки.
+                            if(Math.Pow(firstWheelPositionOnCar.X, 2) +
+                                Math.Pow(firstWheelPositionOnCar.Y, 2) >=
+                                Math.Pow(carSize, 2))
                             {
-                                firstWheelPositionOnCar = vertices[j - 1];
+                                // Перемещаем колесо к ближайшей по углу вершине.
+                                if(Math.Abs(firstWheelAngle - firstAngle) <
+                                    Math.Abs(firstWheelAngle - secondAngle))
+                                {
+                                    firstWheelPositionOnCar = vertices[j - 1];
+                                }
+                                else
+                                {
+                                    firstWheelPositionOnCar = vertices[j % angles.Count];
+                                }
                             }
-                            else
+                        }
+                        // Аналогично для второго колеса.
+                        if((firstAngle <= secondWheelAngle &&
+                            secondWheelAngle <= secondAngle) ||
+                            (firstAngle - circle <= secondWheelAngle &&
+                            secondWheelAngle <= secondAngle - circle))
+                        {
+                            secondWheelPositionOnCar =
+                                GetIntersectionPoint(
+                                    new Vector2(0, 0), secondWheelPosition,
+                                    vertices[j - 1], vertices[j % angles.Count]);
+                            if(Math.Pow(secondWheelPositionOnCar.X, 2) +
+                                Math.Pow(secondWheelPositionOnCar.Y, 2) >=
+                                Math.Pow(carSize, 2))
                             {
-                                firstWheelPositionOnCar = vertices[j % angles.Count];
+                                if(Math.Abs(secondWheelAngle - firstAngle) <
+                                    Math.Abs(secondWheelAngle - secondAngle))
+                                {
+                                    secondWheelPositionOnCar = vertices[j - 1];
+                                }
+                                else
+                                {
+                                    secondWheelPositionOnCar = vertices[j % angles.Count];
+                                }
                             }
                         }
                     }
-                    // Аналогично для второго колеса.
-                    if((firstAngle <= secondWheelAngle &&
-                        secondWheelAngle <= secondAngle) ||
-                        (firstAngle - circle <= secondWheelAngle &&
-                        secondWheelAngle <= secondAngle - circle))
+
+                    float square = 0;
+                    for(int j = 2; j < vertices.Length; ++j)
                     {
-                        secondWheelPositionOnCar =
-                            GetIntersectionPoint(
-                                new Vector2(0, 0), secondWheelPosition,
-                                vertices[j - 1], vertices[j % angles.Count]);
-                        if(Math.Pow(secondWheelPositionOnCar.X, 2) +
-                            Math.Pow(secondWheelPositionOnCar.Y, 2) >=
-                            Math.Pow(carSize, 2))
-                        {
-                            if(Math.Abs(secondWheelAngle - firstAngle) <
-                                Math.Abs(secondWheelAngle - secondAngle))
-                            {
-                                secondWheelPositionOnCar = vertices[j - 1];
-                            }
-                            else
-                            {
-                                secondWheelPositionOnCar = vertices[j % angles.Count];
-                            }
-                        }
+                        square += 0.5f * Math.Abs(
+                            (vertices[j - 1].X - vertices[0].X) *
+                            (vertices[j].Y - vertices[0].Y) -
+                            (vertices[j - 1].Y - vertices[0].Y) *
+                            (vertices[j].X - vertices[0].X));
                     }
-                }
 
-                float square = 0;
-                for(int j = 2; j < vertices.Length; ++j)
-                {
-                    square += 0.5f * Math.Abs(
-                        (vertices[j - 1].X - vertices[0].X) * 
-                        (vertices[j].Y - vertices[0].Y) - 
-                        (vertices[j - 1].Y - vertices[0].Y) *
-                        (vertices[j].X - vertices[0].X));
+                    // Добавляем машинку с расшифрованными параметрами.
+                    physics.AddCar(vertices, speed, fuelPerSquareMeter * square,
+                        firstWheelRadius, secondWheelRadius,
+                        firstWheelPositionOnCar, secondWheelPositionOnCar, i + 1);
                 }
-
-                // Добавляем машинку с расшифрованными параметрами.
-                physics.AddCar(vertices, speed, fuelPerSquareMeter * square, 
-                    firstWheelRadius, secondWheelRadius,
-                    firstWheelPositionOnCar, secondWheelPositionOnCar, i + 1);
             }
+            catch { }
         }
 
         /// <summary>

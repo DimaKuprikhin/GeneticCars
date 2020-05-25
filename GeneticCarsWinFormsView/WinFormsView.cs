@@ -139,8 +139,7 @@ namespace GeneticCarsWinFormsView
         /// <param name="pointOnCircle"> Координата точки на круге для 
         /// отрисовки линии, соединяющей центр и эту точку, для наглядности
         /// движения колес. </param>
-        public void ShowCircle(Vector2 center, float radius, GeneticCarsPhysicsEngine.Color color,
-            Vector2 pointOnCircle)
+        public void ShowCircle(Vector2 center, float radius, GeneticCarsPhysicsEngine.Color color, Vector2 pointOnCircle)
         {
             paintE.Graphics.FillEllipse(new SolidBrush(System.Drawing.Color.FromArgb(color.R,
                 color.G, color.B)), center.X - radius, center.Y - radius,
@@ -234,28 +233,32 @@ namespace GeneticCarsWinFormsView
                 bestResultEver = Math.Max(bestResultEver, bestResults[i]);
             bestReusltEverLabel.Text = $"{(int)bestResultEver} метров";
             float count = bestResults.Count - 1;
-            for(int i = 1; i < bestResults.Count; ++i)
+            try
             {
-                graphPaintE.Graphics.DrawLine(
-                    new Pen(new SolidBrush(System.Drawing.Color.Blue)),
-                    graphPictureBox.Width * (i - 1) / count,
-                    graphPictureBox.Height - 
-                    graphPictureBox.Height * bestResults[i - 1] / bestResultEver,
-                    graphPictureBox.Width * i / count,
-                    graphPictureBox.Height - 
-                    graphPictureBox.Height * bestResults[i] / bestResultEver);
+                for(int i = 1; i < bestResults.Count; ++i)
+                {
+                    graphPaintE.Graphics.DrawLine(
+                        new Pen(new SolidBrush(System.Drawing.Color.Blue)),
+                        graphPictureBox.Width * (i - 1) / count,
+                        graphPictureBox.Height -
+                        graphPictureBox.Height * bestResults[i - 1] / bestResultEver,
+                        graphPictureBox.Width * i / count,
+                        graphPictureBox.Height -
+                        graphPictureBox.Height * bestResults[i] / bestResultEver);
+                }
+                for(int i = 1; i < averageResults.Count; ++i)
+                {
+                    graphPaintE.Graphics.DrawLine(
+                        new Pen(new SolidBrush(System.Drawing.Color.Green)),
+                        graphPictureBox.Width * (i - 1) / count,
+                        graphPictureBox.Height -
+                        graphPictureBox.Height * averageResults[i - 1] / bestResultEver,
+                        graphPictureBox.Width * i / count,
+                        graphPictureBox.Height -
+                        graphPictureBox.Height * averageResults[i] / bestResultEver);
+                }
             }
-            for(int i = 1; i < averageResults.Count; ++i)
-            {
-                graphPaintE.Graphics.DrawLine(
-                    new Pen(new SolidBrush(System.Drawing.Color.Green)),
-                    graphPictureBox.Width * (i - 1) / count,
-                    graphPictureBox.Height -
-                    graphPictureBox.Height * averageResults[i - 1] / bestResultEver,
-                    graphPictureBox.Width * i / count,
-                    graphPictureBox.Height -
-                    graphPictureBox.Height * averageResults[i] / bestResultEver);
-            }
+            catch { }
         }
 
         /// <summary>
@@ -502,9 +505,16 @@ namespace GeneticCarsWinFormsView
             }
             else
             {
-                generationLifeTimeLabel.Text = $"Время жизни популяции: {newValue:F2} сек";
-                GenerationLifeTime = newValue;
-                generationLifeTimeChanged?.Invoke(this, EventArgs.Empty);
+                if(newValue < 1.0)
+                {
+                    generationLifeTimeTextBox.Text = "";
+                }
+                else
+                {
+                    generationLifeTimeLabel.Text = $"Время жизни популяции: {newValue:F2} сек";
+                    GenerationLifeTime = newValue;
+                    generationLifeTimeChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -550,11 +560,17 @@ namespace GeneticCarsWinFormsView
             }
             else
             {
-                fuelPerSquareMeterLabel.Text = $"Топлива на кв. м: {newValue:F2}";
-                FuelPerSquareMeter = newValue;
-                fuelPerSquareMeterSet?.Invoke(this, EventArgs.Empty);
+                if(newValue < 1.0)
+                {
+                    setFuelPerSquareMeterTextBox.Text = "";
+                }
+                else
+                {
+                    fuelPerSquareMeterLabel.Text = $"Топлива на кв. м: {newValue:F2}";
+                    FuelPerSquareMeter = newValue;
+                    fuelPerSquareMeterSet?.Invoke(this, EventArgs.Empty);
+                }
             }
-            
         }
 
         /// <summary>
@@ -593,14 +609,22 @@ namespace GeneticCarsWinFormsView
             if(dialog.ShowDialog() == DialogResult.OK)
             {
                 StreamWriter writer = new StreamWriter(dialog.FileName);
+                writer.WriteLine("Размер популяции и количество байт, кодирующих особь:");
                 writer.WriteLine($"{populationSize},{bytesPerIndivid}");
+
+                writer.WriteLine("Гены особей:");
                 for(int i = 0; i < populationSize; ++i)
                 {
                     writer.WriteLine(string.Join(",", genes[i]));
                 }
+
+                writer.WriteLine("Количество поколений:");
                 writer.WriteLine(bestResults.Count);
+                writer.WriteLine("Средние результаты каждого поколения:");
                 writer.WriteLine(string.Join(",", averageResults));
+                writer.WriteLine("Лучшие результаты каждого поколения:");
                 writer.WriteLine(string.Join(",", bestResults));
+                writer.WriteLine("Общее время симуляции этой популяции:");
                 writer.WriteLine(simulationTime);
                 writer.Close();
             }
@@ -650,12 +674,14 @@ namespace GeneticCarsWinFormsView
             if(dialog.ShowDialog() == DialogResult.OK)
             {
                 StreamReader reader = new StreamReader(dialog.FileName);
+                reader.ReadLine();
                 string[] firstLine = reader.ReadLine().Split(',');
                 populationSize = int.Parse(firstLine[0]);
                 bytesPerIndivid = int.Parse(firstLine[1]);
                 if(populationSize < 1 || bytesPerIndivid < 1)
                     throw new Exception();
                 populationSizeUpDown.Value = populationSize;
+                reader.ReadLine();
                 byte[][] genes = new byte[populationSize][];
                 for(int i = 0; i < populationSize; ++i)
                 {
@@ -668,17 +694,21 @@ namespace GeneticCarsWinFormsView
                         genes[i][j] = byte.Parse(nextGenes[j]);
                     }
                 }
+                reader.ReadLine();
                 int resultsSize = int.Parse(reader.ReadLine());
+                reader.ReadLine();
                 string[] results = reader.ReadLine().Split(',');
                 if(resultsSize != results.Length)
                     throw new Exception();
                 for(int i = 0; i < results.Length; ++i)
                     averageResults.Add(int.Parse(results[i]));
+                reader.ReadLine();
                 results = reader.ReadLine().Split(',');
                 if(resultsSize != results.Length)
                     throw new Exception();
                 for(int i = 0; i < results.Length; ++i)
                     bestResults.Add(int.Parse(results[i]));
+                reader.ReadLine();
                 simulationTime = double.Parse(reader.ReadLine());
                 reader.Close();
                 return genes;
